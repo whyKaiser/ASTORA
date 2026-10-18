@@ -11,6 +11,7 @@ import { AstoraError, publicError } from './src/errors.mjs';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
 const webRoot = join(root, 'web');
+const { version } = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
 const token = randomBytes(24).toString('hex');
 const port = Number(process.env.PORT || 4318);
 const request = createTransport();
@@ -44,7 +45,7 @@ const server = http.createServer(async (req, res) => {
   if (req.headers.origin && req.headers.origin !== origin) return json(res, 403, { error: 'ORIGIN_REJECTED' });
   const path = new URL(req.url, origin).pathname;
   try {
-    if (req.method === 'GET' && path === '/api/config') return json(res, 200, { token, mode: 'desktop-preview', version: '0.1.0-alpha.1', nativeInstallation: false });
+    if (req.method === 'GET' && path === '/api/config') return json(res, 200, { token, mode: 'desktop-preview', version, nativeInstallation: false });
     if (req.method === 'GET' && path === '/api/catalog') return json(res, 200, normalizeCatalog(JSON.parse(await readFile(join(root, 'catalogs', 'homebrew.json'), 'utf8'))));
     if (req.method === 'GET' && path === '/api/downloads') return json(res, 200, manager.list());
     if (req.method === 'POST' && path.startsWith('/api/')) {

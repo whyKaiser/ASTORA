@@ -45,3 +45,9 @@ Files are expected to be PS4 PKG containers. Selecting PS1/PS2/PSP does not conv
 Do not relabel a patch as a base game or share private/signed URLs in public catalogs. URLs with embedded username/password, fragments, control characters or unsupported schemes are rejected. Existing percent-escaping and query order are preserved. Unknown fields are discarded; arbitrary HTML and scripts are never rendered.
 
 The app does not scrape or copy someone else's private catalog. Maintain your own metadata and link to sources you may access and share. Original application authorship stays with its creator.
+
+## Optional Arabic/English translations
+
+Existing catalogs remain valid. A catalog may add `"translations":{"ar":{"name":"مكتبتي"},"en":{"name":"My library"}}`. Each item may add `translations.ar` and `translations.en` with optional `title` (160 characters) and `description` (600 characters). Only these languages and fields are accepted. Missing text falls back to the original field. Text is rendered literally, never as HTML.
+
+Search includes both translations regardless of interface language. The UI keeps at most 30 added catalogs; saving also depends on browser storage quota.

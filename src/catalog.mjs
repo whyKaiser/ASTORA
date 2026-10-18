@@ -10,6 +10,21 @@ function string(value, max, required = true) {
   return value.trim();
 }
 
+function translations(input, fields) {
+  if (input === undefined) return {};
+  if (!input || typeof input !== 'object' || Array.isArray(input)) fail();
+  const output = {};
+  for (const [language, values] of Object.entries(input)) {
+    if (!['ar', 'en'].includes(language) || !values || typeof values !== 'object' || Array.isArray(values)) fail();
+    output[language] = {};
+    for (const [field, value] of Object.entries(values)) {
+      if (!Object.hasOwn(fields, field)) fail();
+      output[language][field] = string(value, fields[field]);
+    }
+  }
+  return output;
+}
+
 export function validateUrl(value) {
   if (typeof value !== 'string' || value.length > 8192 || /[\u0000-\u0020\\]/.test(value)) throw new AstoraError('INVALID_URL');
   let url;
@@ -40,6 +55,7 @@ export function normalizeItem(input) {
     id, title, platform, kind, titleId, size, sha256,
     version: string(input.version, 40, false),
     description: string(input.description, 600, false), homepage,
+    translations: translations(input.translations, { title: 160, description: 600 }),
     sources: sources.map(source => {
       if (!source || typeof source !== 'object') fail();
       const url = string(source.url, 8192);
@@ -56,5 +72,5 @@ export function normalizeCatalog(input) {
   if (!/^[a-zA-Z0-9._-]+$/.test(id)) fail();
   const items = input.items.map(normalizeItem);
   if (new Set(items.map(item => item.id)).size !== items.length) fail();
-  return { schemaVersion: 1, id, name: string(input.name, 100), items };
+  return { schemaVersion: 1, id, name: string(input.name, 100), translations: translations(input.translations, { name: 100 }), items };
 }

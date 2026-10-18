@@ -1,24 +1,28 @@
 # ASTORA
 
-**مكتبتك، بوضوح.** An Arabic-first library project, starting with PS4 package workflows.
+**عالمك، على طريقتك.** An Arabic/English library project, starting with PS4 package workflows.
 
-[العربية](README.ar.md) · [Catalog format](docs/catalog-format.md) · [Roadmap](docs/roadmap.md) · [Verification](docs/verification.md)
+[العربية](README.ar.md) · [Catalog format](docs/catalog-format.md) · [Roadmap](docs/roadmap.md) · [Verification](docs/verification.md) · [Standalone research](docs/standalone-research.md) · [Design](docs/design.md)
 
 ![ASTORA desktop preview](docs/preview.jpg)
 
+[English interface preview](docs/preview-en.jpg) · [Library preview](docs/library.jpg)
+
 ## Status: desktop pre-alpha
 
-**v0.1.0-alpha.1 is a working desktop preview and package-management foundation. It is not a standalone PS4 application. There is no ASTORA PKG release yet.** Downloads in this version are saved on the computer, not installed on a console.
+**v0.2.0-alpha.1 is a working desktop preview and package-management foundation. It is not a standalone PS4 application. There is no ASTORA PKG release yet.** Downloads in this version are saved on the computer, not installed on a console.
 
 The intended product runs on PS4 without a PC. That requires a native runtime and console testing; neither is claimed complete here. PS3 and PS5 games do not become playable on PS4 by adding a catalog.
 
 ## What works
 
-- Arabic interface, right-to-left layout, search, platform filters, keyboard navigation, and locally saved catalogs.
+- Arabic and English, mirrored RTL/LTR layout, saved language and reduced-motion settings.
+- Original ink/teal/champagne identity with Arabic-inspired SVG geometry.
+- Indexed bilingual search, 24-card pagination, platform filters and keyboard navigation. Tested with a 5000-entry catalog.
 - Multiple named catalogs and multiple download mirrors per item. JSON file or public URL import.
 - Real HTTP preflight: follow redirects, read the first 8 KiB, identify HTML, archives, zero-filled responses, and PS4 PKG headers.
 - Compare the package title ID, content kind and declared size with catalog metadata.
-- Explain access restrictions, missing files, rate limits and invalid responses with stable error codes and Arabic messages.
+- Explain access restrictions, missing files, rate limits and invalid responses with stable error codes and Arabic/English messages.
 - Download one file at a time to `data/downloads/`; pause and recover after restart. Resume requires HTTP Range and an unchanged strong ETag. No unsafe append when a source changes.
 - Compute SHA-256 on complete files and compare a published checksum when provided. A file with a mismatched hash remains unapproved as `.part`.
 - Keep transfer and installation states distinct. This preview never reports a console installation.

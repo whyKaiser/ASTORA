@@ -1,6 +1,6 @@
 {
   "name": "astora",
-  "version": "0.1.0-alpha.1",
+  "version": "0.2.0-alpha.1",
   "private": true,
   "description": "Arabic-first catalog and PKG inspection foundation for ASTORA",
   "type": "module",
@@ -8,7 +8,7 @@
   "scripts": {
     "start": "node server.mjs",
     "test": "node --test test/*.test.mjs",
-    "check": "node --check server.mjs && node --check web/app.js",
+    "check": "node --check server.mjs && node --check web/app.js && node --check web/i18n.js && node --check web/library-model.js",
     "test:live": "node scripts/inspect-bundled.mjs"
   },
   "license": "MIT"

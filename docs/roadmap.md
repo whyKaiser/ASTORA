@@ -7,6 +7,13 @@
 - Desktop downloads, safe conditional resume, full-file SHA-256 comparison.
 - Local regression tests and one real official homebrew download.
 
+## Completed in 0.2.0-alpha.1
+
+- Arabic/English interface, optional catalog translations and saved preferences.
+- Original Arabic-inspired identity, restrained motion and reduced-motion mode.
+- Indexed bilingual search and 24-card pagination verified with 5000 entries.
+- Visibility-aware transfer polling and source-based standalone architecture research.
+
 ## Next: standalone PS4 proof
 
 - Establish a clean OpenOrbis build and native API bindings.

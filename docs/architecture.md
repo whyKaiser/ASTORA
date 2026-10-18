@@ -3,7 +3,7 @@
 ## Current implementation
 
 ```text
-Arabic browser UI
+Arabic/English browser UI
     | same-origin JSON API and per-launch request token
 Loopback desktop adapter (server.mjs)
     | catalog validator / package inspector / download manager
@@ -43,3 +43,9 @@ OpenOrbis is a candidate toolchain: [official repository](https://github.com/Ope
 The server binds only to `127.0.0.1`, checks Host and Origin, requires a per-launch token for API mutations, and sends no CORS permission. This protects a local development surface; it is not a hosted multi-user service. Do not proxy it to the public internet. LAN source support and a console transport must have an explicit separate design.
 
 HTTP errors and redirects are evaluated before payload inspection. Public error reports include stable codes and safe metadata, never exception text or resolved signed URLs. Private originals are still needed locally for resume and are deliberately excluded from Git.
+
+## UI model and localization
+
+`web/i18n.js` holds plain-text Arabic/English strings and localized diagnostics. `web/library-model.js` builds a bilingual search index and returns at most 24 items per page. Locale and motion preferences persist in browser storage. Catalog mutations rebuild the index; keystrokes do not.
+
+[Standalone research](standalone-research.md) records the source comparison and console acceptance gate. [Design](design.md) describes the original visual system and bounded rendering strategy.
