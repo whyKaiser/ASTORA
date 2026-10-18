@@ -2,6 +2,14 @@
 
 Checked: **2026-10-18, 01:49–01:52 UTC**. Scope: public developer documentation, GitHub release metadata, bounded HTTP probes, and ASTORA catalog validation. No console installation, gameplay, proprietary module download, commercial game download, or large archive download was performed in this research pass.
 
+**Later device result, 2026-10-18:** ASTORA 0.4.10 downloaded and installed 2048
+1.00 on PS4 13.52. Game launch and D-pad tile movement succeeded; 2048's own Quit
+action produced `CE-34878-0`, cause unconfirmed. ASTORA retained its verified
+installed record after reopening. Native full-file hash, 2048 saves/reopening and
+literal PC-off operation remain unverified. The table below records the earlier
+discovery pass; see the [device verification record](verification.md#native-0410-actual-download-installation-and-gameplay)
+for the later results. Other candidates have no new gameplay verification.
+
 ## Result
 
 A free catalog can link directly to developers' public release files. The user needs no paid host and no computer running at download time if the downloader runs on the PS4. This still depends on upstream servers staying online. A reachable file is not proof of installation, firmware compatibility, or gameplay.

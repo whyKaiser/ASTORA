@@ -30,10 +30,10 @@ An additional opt-in live header check passed for all three bundled sources: Apo
 
 ## Not yet verified
 
-- Full native workflow acceptance on PS4; any ASTORA execution on PS5.
-- Installation through ASTORA on a console.
-- Console controller, suspend/resume and power interruption.
-- Console-native HTTPS and source resolvers.
+- PC-off native operation and broad PS4 compatibility; any ASTORA execution on PS5.
+- Full-file native hash verification and additional package/game compatibility.
+- Suspend/resume, power interruption and extended controller acceptance.
+- Arbitrary source resolvers; GitHub native HTTPS was verified below.
 - Private, restricted or commercial-game sources.
 
 ## Browser checks
@@ -123,3 +123,81 @@ It now requests normal application exit. This is a verified code defect and
 an observed exit sequence, but not proof of the cause of the user's earlier
 black screen after selecting 2048. Console source inspection, native download,
 installation, gameplay, measured frame rate and PC-off operation remain open.
+
+
+## Native controller and HTTPS verification — 2026-10-18
+
+Direct Remote Play captures from the actual PS4 13.52, not desktop previews:
+
+![ASTORA 0.4.6 on PS4](ps4-home-0.4.6.png)
+
+![Native HTTPS header check](ps4-source-0.4.6.png)
+
+- A zero browser-control mask in 0.4.2 disabled input. Restoring the custom
+  browser controls restored pointer operation. Package ATTRIBUTE bit 5 follows
+  the console's confirm-button assignment, preventing Cross from cancelling.
+- In 0.4.5 and 0.4.6, Cross opened the focused 2048 card with the pointer elsewhere.
+  D-pad Down selected Check source, and Cross activated it. The adapter then
+  checked the SKID02048 package header and 33.8 MiB size over native HTTPS.
+- The directional bridge prevents pointer clicks from overriding D-pad selection.
+  Real stick movement returns to pointer targeting. Six input tests and eight
+  model tests passed; backend contract, 23 HTTP-server tests and browser lifecycle
+  tests also passed during this iteration. These host tests are not device tests.
+- Resolver retry zero was rejected by the console HTTP library. Retry one, a
+  non-null empty proxy hostname and operation-specific diagnostics restored the
+  inspected GitHub source flow without disabling TLS verification.
+- Native installation failed loading AppInstUtil: module load `0x80020002`,
+  Sysmodule load `0x80020008`. Loading BGFT through Sysmodule succeeded.
+  A ShellCore SELF identity experiment in 0.4.6 did not fix AppInstUtil; 0.4.7
+  restored the original identity and loaded both explicit service dependencies
+  successfully, but AppInstUtil still failed. 0.4.7 was installed and its first
+  launch, directional card selection and HTTPS source inspection succeeded.
+- One first launch after replacing 0.4.5 showed `CE-34878-0`; relaunch succeeded.
+  After explicitly closing ASTORA before replacement, 0.4.6 launched first try.
+  The intermittent failure is not yet attributed or claimed fixed.
+- The binaries remain local test builds. No game download/installation or PC-off
+  result is inferred from successful package inspection.
+
+Build 0.4.8 removes AppInstUtil as a prerequisite for BGFT submission. The optional
+precheck still runs where available, and BGFT's installed-title conflict is always
+rejected. New backend contract checks cover absent/failed AppInstUtil, real progress
+without confirmation, and a rejected conflict with no start or retry. They passed
+with undefined-behavior sanitization. Native cross-compilation also passed.
+On the actual console, 0.4.8 launched and inspected 2048 successfully. BGFT initialization then failed with `0x80990050` before task registration. No game download started.
+
+Build 0.4.9 adds an external, checksum-pinned libjbc dependency for process credential setup before installer services load. Original credentials are retained and restored on normal app exit, with rollback after a partially failed setup. Host tests cover read/preparation/apply failures, failed restoration, retry behavior and successful idempotent setup/restore. They passed under UBSan alongside the backend contracts; the native build passed. On PS4 13.52, 0.4.9 launched, inspected the package and passed BGFT initialization. Registration then returned `0x80990033`. This isolates the next failure to URL handling rather than service setup.
+
+Build 0.4.10 wraps the inspected source in the console-only BGFT reference format. Host tests verified header-digest/size fields, preservation and JSON escaping of the signed URL, GET/HEAD behavior, unavailable routes and rejected methods. Native compilation and backend tests passed.
+
+## Native 0.4.10 actual download, installation and gameplay
+
+On the same PS4 13.52, with its existing GoldHEN session:
+
+- Package `00.50` installed and opened. Complete USB FTP readback matched SHA-256
+  `1453cb047b1262a35597e4b04597b4058d514f561738aa85ec98b3735d066006`.
+- The controller opened 2048 details and checked the developer's HTTPS package:
+  `SKID02048`, 35,454,976 bytes (33.8 MiB).
+- BGFT accepted ASTORA's loopback reference document. Actual displayed progress
+  advanced through 3.8, 23.5 and 29.5 MiB to 33.8 MiB. The final label was
+  **Installed — verified**, requiring BGFT completion and AppInstUtil confirmation.
+- Exiting ASTORA returned normally to the PS4 home screen. Game 2048 appeared,
+  launched, entered gameplay, and responded to D-pad tile movement.
+- **Pressing Square on 2048's own Quit action produced `CE-34878-0` for Game 2048.**
+  The error was dismissed and the console remained usable. Cause is unconfirmed;
+  this is not a claim that the game is stable in all scenarios.
+- ASTORA reopened normally, and its Transfers page retained the verified installed
+  record. English/Arabic and sand/dark switching worked on the actual device.
+  Arabic and dark mode were restored before exiting.
+- Both normal ASTORA exits logged `privileges_restore 0x00000000`.
+
+![Completed native installation after reopening ASTORA](ps4-installed-0.4.10.png)
+
+[English on PS4](ps4-english-0.4.10.png) · [Sand on PS4](ps4-sand-0.4.10.png)
+
+The computer supplied Remote Play viewing and input, not ASTORA's UI server or
+download relay. It remained powered on, so literal PC-off acceptance is **not yet
+verified**. Save/reopen behavior in 2048, suspension, interrupted downloads,
+arbitrary source providers and all other requested platforms remain unverified.
+Native full-file SHA-256 is not implemented. Local evidence includes the source
+check, progress frames, home-screen installation, gameplay and quit-error captures.
+No combined native binary is published as a verified release.

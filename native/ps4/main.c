@@ -1,6 +1,7 @@
 #include "backend.h"
 #include "browser.h"
 #include "server.h"
+#include "privileges.h"
 #include <orbis/libkernel.h>
 #include <orbis/SystemService.h>
 #include <orbis/UserService.h>
@@ -34,10 +35,14 @@ static void startup_error(const char *detail) {
            "ASTORA could not start: %.200s\nLog: /data/ASTORA/native-status.log", detail);
   sceKernelSendNotificationRequest(0, &notification, sizeof(notification), 0);
 }
+static int finish_application(void) {
+  ast_log("privileges_restore", ast_privileges_restore());
+  return sceSystemServiceLoadExec("exit", NULL);
+}
 /* Independent OpenOrbis process; never loads Nova, DiPlay or a title plugin. */
 int main(void) {
   mkdir("/data/ASTORA", 0777);
-  ast_log("astora_boot_0.4.1", 0);
+  ast_log("astora_boot_0.4.10", 0);
   int rc = ast_backend_init();
   ast_log("backend_init", rc);
   if (rc) {
@@ -59,7 +64,7 @@ int main(void) {
   if (rc) {
     ast_log(ast_browser_error(), rc);
     startup_error(ast_browser_error());
-    return sceSystemServiceLoadExec("exit", NULL);
+    return finish_application();
   }
   ast_log("hide_splash", sceSystemServiceHideSplashScreen());
   if (!rc) remote_play_diagnostic();
@@ -73,7 +78,7 @@ int main(void) {
     }
     if (!ast_browser_running()) {
       ast_log("interface_closed_exit_requested", 0);
-      return sceSystemServiceLoadExec("exit", NULL);
+      return finish_application();
     }
     sceKernelUsleep(16667);
   }

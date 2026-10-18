@@ -362,7 +362,7 @@ static void handle(int fd) {
     cJSON *o = cJSON_CreateObject();
     cJSON_AddStringToObject(o, "token", token);
     cJSON_AddStringToObject(o, "mode", "ps4-native-experimental");
-    cJSON_AddStringToObject(o, "version", "0.4.1-alpha.1");
+    cJSON_AddStringToObject(o, "version", "0.4.10-alpha.1");
     cJSON_AddBoolToObject(o, "pcRequired", 0);
     json_reply(fd, 200, o);
     return;
@@ -431,8 +431,9 @@ static void handle(int fd) {
     if (!strcmp(path, "/api/ui-event")) {
       /* Fixed event names only: no source URLs, identifiers, or arbitrary log text. */
       const char *event = str(o, "event");
-      const char *events[] = {"library_ready", "detail_opened", "detail_closed",
-                              "inspect_clicked", "install_clicked", "ui_error"};
+      const char *events[] = {"library_ready", "detail_requested", "detail_opened", "detail_closed",
+                              "inspect_clicked", "install_clicked", "ui_error",
+                              "input_pointer", "input_press", "input_click", "input_key"};
       int accepted = 0;
       for (size_t i = 0; event && i < sizeof(events) / sizeof(events[0]); i++) {
         if (!strcmp(event, events[i])) {

@@ -73,6 +73,14 @@ extern int32_t sceWebBrowserDialogInitialize(void);
 extern int32_t sceWebBrowserDialogOpen(const AstBrowserParam *param);
 extern int32_t sceWebBrowserDialogUpdateStatus(void);
 extern int32_t sceWebBrowserDialogTerminate(void);
+typedef struct AstBrowserResult {
+    int32_t result;
+    int32_t padding;
+    void *callback;
+    uint8_t reserved[240];
+} AstBrowserResult;
+_Static_assert(sizeof(AstBrowserResult) == 256, "browser result ABI");
+extern int32_t sceWebBrowserDialogGetResult(AstBrowserResult *result);
 
 /* Public common-dialog error values, independently documented by shadPS4:
  * src/core/libraries/system/commondialog.h, revision 860a477160e08e65f8c0927677c1955be28fabc7. */
@@ -177,9 +185,9 @@ int ast_browser_open(const char *url)
     browser_param.width = 1920;
     browser_param.height = 1080;
     browser_param.header_width = 1920;
-    /* Brew's public server.c uses these five control bits in the PS4 custom
-     * browser dialog. Keep browser navigation available in the first probe.
-     * https://github.com/toxxic407/Brew/blob/master/server.c */
+    /* Enable the browser control mask used by the public PS4 Brew launcher.
+     * A zero mask left this console's embedded view without pointer/button
+     * input. Button assignment itself comes from the package's ATTRIBUTE. */
     browser_param.control = UINT32_C(0x1f);
     /* Optional callback, IME and web-view parameters stay NULL. Other fields
      * remain zero, matching the minimal public launcher parameter usage. */
@@ -216,8 +224,13 @@ void ast_browser_tick(void)
         status == ORBIS_COMMON_DIALOG_STATUS_INITIALIZED) return;
     browser_active = 0;
     if (status == ORBIS_COMMON_DIALOG_STATUS_FINISHED) {
+        AstBrowserResult outcome;
+        memset(&outcome, 0, sizeof(outcome));
+        int32_t read_result = sceWebBrowserDialogGetResult(&outcome);
         snprintf(browser_diagnostic, sizeof browser_diagnostic,
-                 "Browser dialog closed");
+                 "Browser dialog closed: API 0x%08x result 0x%08x",
+                 (unsigned int)(uint32_t)read_result,
+                 (unsigned int)(uint32_t)outcome.result);
     } else {
         fail("WebBrowserDialog status", status);
     }

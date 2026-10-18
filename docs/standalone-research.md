@@ -43,4 +43,22 @@ The browser preview implements two languages, indexed catalog search, 24-card pa
 4. Register one installation, preserve its task ID, observe real progress and confirm the installed application. Recover safely from uncertain responses.
 5. Repeat with the PC off. Then test app exit, suspend/reopen, full storage and expired sources.
 
-Until these pass, releases remain explicitly **desktop previews**. Desktop screenshots and native-library symbol names cannot substitute for the console test.
+Until these pass, builds remain explicitly **experimental**. Desktop previews and
+console test packages are identified separately. Desktop screenshots and native-library
+symbol names cannot substitute for the console test. See [current device evidence](verification.md).
+
+## Infinitykkj STORE — public metadata review, 2026-10-18
+
+The user supplied [a YouTube demonstration](https://youtu.be/DQHXK576FhY), titled
+“تثبيت ألعاب PS4 من مكتبة INFINITY STORE! 🎮 (شرح كامل)” by POARO0. Its description
+advertises direct console downloads without a PC. Only the title and description
+were retrieved; the video was not watched or used as runtime verification.
+
+The developer's [public repository](https://github.com/infinitykkj/Infinitykkj-STORE-PS4)
+currently contains a README identifying a beta store, but no application source
+or license. The linked installer hostname did not resolve from the test machine.
+The [activation panel](https://infinitydev.shop/Orbis-Helper/) presents username
+and password login. These observations do not establish current pricing, permanent
+free access, download reliability or an integration API. No package was installed,
+no account was created, and no catalog was imported. Keep it as a comparison target,
+not a dependency of ASTORA.

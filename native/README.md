@@ -1,10 +1,13 @@
 # ASTORA native PS4 test build
 
-Version **0.4.1-alpha.1**, title ID **ASTR00001**, package version **00.41**.
+Version **0.4.10-alpha.1**, title ID **ASTR00001**, package version **00.50**.
 This is an independent process with its own console loopback server, browser dialog,
 HTTPS client and BGFT adapter. It does not load NovaStore, DiPlay, their plugins,
-or a computer-hosted server. **The tester confirmed that the ASTORA interface opened
-on PS4. Native downloads, game installation and PC-off operation remain unverified.**
+or a computer-hosted server. **Actual PS4 testing verified opening the interface,
+directional selection, confirm-button activation, native HTTPS package inspection,
+the complete 2048 download, installed-title confirmation, game launch and tile
+movement on PS4 13.52. Its own Quit action crashed with CE-34878-0, cause unconfirmed.
+Literal PC-off operation and broader compatibility remain unverified.**
 
 The initial package is 6,619,136 bytes. The bundled catalog links three developer
 utilities and the free 2048 game; game binaries are not bundled. Files download
@@ -26,12 +29,34 @@ Details are populated before their overlay opens. Request errors stay visible,
 closing the panel restores focus, and stale responses cannot replace a newer
 panel. Closing the native browser dialog now requests a normal application exit
 instead of leaving a running process with no interface. This fixes an identified
-lifecycle gap; the previously reported black-screen incident is not yet reproduced
-under observation.
+lifecycle gap. Device testing found that a zero browser-control mask disabled
+input and the zero package ATTRIBUTE made Cross cancel the browser. The custom
+browser now enables its controls, and ATTRIBUTE bit 5 follows the system confirm
+button. The directional-input bridge routes confirm clicks to the focused control;
+stick movement restores pointer targeting. Circle exits the native dialog, so the
+footer labels it as Exit; the panel's close button returns to the library.
 
-The tester confirmed installation and launch of 0.4.1. Retrieved device logs
-recorded `ui_library_ready` and a normal `interface_closed_exit_requested` sequence.
-Download, installation and controller acceptance tests are still outstanding.
+On PS4 13.52, 0.4.5 opened the 2048 details, selected Check source with the D-pad,
+and activated it with Cross while the pointer remained elsewhere. Native HTTPS
+returned the expected SKID02048 header and 33.8 MiB size. Installation then failed
+loading AppInstUtil. One first launch after replacement showed CE-34878-0; the next
+launch succeeded. This intermittent startup issue remains unresolved.
+
+The HTTP adapter uses a supported resolver retry count and a non-null empty proxy
+host. Installer modules load through Sysmodule before symbol resolution. Build
+0.4.6 tested a ShellCore SELF identity suggested by
+[flatz's AppInstUtil documentation](https://flatz.github.io/), but it did not
+resolve this console's module-load failure. Version 0.4.7 restored the original
+SELF identity and loaded SysCore/NpCommon successfully, but AppInstUtil still
+failed with the same codes. Version 0.4.8 separates optional AppInstUtil
+confirmation from BGFT download submission. BGFT installed-title conflicts are
+still rejected without retrying, uninstalling or enabling overwrite. If the
+confirmation service is absent, a finished transfer remains unconfirmed and the
+UI directs the user to PS4 Notifications; it is never labeled installed.
+See the [verification record](../docs/verification.md) for device results.
+Version 0.4.9 adds process credential setup through external libjbc before installer initialization, with checked results and restoration on normal exit. This uses the existing homebrew kernel interface; it does not activate accounts or change persistent system files. The build fetches a checksum-pinned dependency into ignored build output. On PS4 13.52, this resolved BGFT initialization. Registration then rejected GitHub’s redirected asset URL with `0x80990033` (unsupported URL extension).
+
+Build 0.4.10 publishes a single-piece BGFT reference document on a separate console-only loopback listener. It uses the package-header digest and inspected size, preserves the signed HTTPS source unchanged, and gives BGFT a `.json` URL. The file itself still downloads directly from its source. The manifest is kept in memory until ASTORA exits; no computer relay or paid service is used. A random capability route protects each document. On PS4 13.52 this completed the 33.8 MiB 2048 transfer and installation. The installed record persisted after ASTORA reopened; both normal exits logged successful credential restoration. Arabic/English and dark/sand switching were visually verified on the console.
 
 ## Build
 
@@ -63,8 +88,11 @@ console icon while preserving the project-supplied original logo unchanged.
 ```sh
 node native/preview.mjs
 # http://127.0.0.1:4319/ — browser-only preview, no console connection
-node --test native/tests/ui-model.test.mjs
+node --test native/tests/ui-model.test.mjs native/tests/ui-input.test.mjs
 python3 native/tests/test-server.py
+python3 native/tests/test-manifest.py
+clang-18 -std=c11 -Wall -Wextra -Werror -fsanitize=undefined -fsanitize-trap=all -Inative/build/libjbc native/tests/privileges-test.c -o /tmp/astora-privileges-test
+/tmp/astora-privileges-test
 clang-18 -std=c11 -Wall -Wextra -Werror -fsanitize=undefined -fsanitize-trap=all native/tests/backend-test.c -o /tmp/astora-backend-test
 /tmp/astora-backend-test
 clang-18 -std=c11 -Wall -Wextra -Werror -I native/tests native/tests/browser-lifecycle.c -o /tmp/astora-browser-test
@@ -116,6 +144,9 @@ after reopening depends on the system still retaining the task record.
 - HTTP requests have a 30-second budget; firmware BGFT IPC has no documented
   cancellation timeout. A native service failure can still require closing the app.
 - Sources and their servers can change. Reachability does not prove compatibility.
+- Keep ASTORA open during a transfer in this test build. Reference documents are
+  process-local, and upstream signed URLs expire. Resume after app closure,
+  suspension or power interruption has not been verified.
 
 Original application code is MIT. Packaged OpenOrbis runtime components retain
 their own licenses; see [notices](notices/README.txt). Native binary publication
@@ -123,3 +154,5 @@ must include the corresponding dependency source/build material, not only the
 ASTORA source tree. This local test package has not been published as a verified release.
 
 Vendored parser: [cJSON v1.7.19](https://github.com/DaveGamble/cJSON/tree/v1.7.19), unmodified source with its MIT notice. The configured nesting limit is 32.
+
+External build dependency: [bucanero/ps4-libjbc](https://github.com/bucanero/ps4-libjbc), revision `835fe016ff0ae5dd89b9249f39cc0fe093fd07dd`, derived from sleirsgoevy. `fetch-libjbc.py` verifies its archive SHA-256 and places only selected source files in ignored build output. This dependency is not relicensed under ASTORA’s MIT license. Its redistribution terms must be established before publishing a combined binary.

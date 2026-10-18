@@ -12,10 +12,11 @@
  * and revalidates every redirect. It does not claim arbitrary-host SSRF safety
  * or replace TLS verification with a permissive callback. HTTP is rejected.
  * TLS root trust is the console's system trust store. Unsupported/expired TLS
- * fails closed; there is no HTTP fallback. BGFT receives the validated final
- * HTTPS URL, including its query, with CDN query modification disabled.
+ * fails closed; there is no HTTP fallback. BGFT receives a console-local reference document containing the validated
+ * final HTTPS URL, including its query, with CDN query modification disabled.
  */
 #include "backend.h"
+#include "manifest.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -26,7 +27,9 @@
 extern uint64_t ast_test_clock(void);
 static uint64_t now_us(void) { return ast_test_clock(); }
 #else
+#include "privileges.h"
 #include <orbis/libkernel.h>
+#include <orbis/Sysmodule.h>
 static uint64_t now_us(void) { return sceKernelGetProcessTime(); }
 #endif
 
@@ -118,6 +121,7 @@ typedef struct {
 typedef struct {
     char content_id[37];
     char title_id[10];
+    char digest[65];
     uint64_t size;
 } PackageInfo;
 
@@ -417,18 +421,34 @@ static int resolve_transport(void) {
 }
 
 static int resolve_installer(void) {
-    int background = module_for("/system/common/lib/libSceBgft.sprx", "sceBgftServiceDownloadGetProgress");
+    /* Sysmodule loads the services' dependencies before resolving their exports. */
+    int core_load = sceSysmoduleLoadModuleInternal(ORBIS_SYSMODULE_INTERNAL_SYSCORE);
+    int common_load = sceSysmoduleLoadModuleInternal(ORBIS_SYSMODULE_INTERNAL_NP_COMMON);
+    int app_load = sceSysmoduleLoadModuleInternal(ORBIS_SYSMODULE_INTERNAL_APP_INST_UTIL);
+    int bgft_load = sceSysmoduleLoadModuleInternal(ORBIS_SYSMODULE_INTERNAL_BGFT);
     int applications = module_for("/system/common/lib/libSceAppInstUtil.sprx", "sceAppInstUtilInitialize");
+    int background = module_for("/system/common/lib/libSceBgft.sprx", "sceBgftServiceDownloadGetProgress");
     int users = module_for("/system/common/lib/libSceUserService.sprx", "sceUserServiceGetInitialUser");
-    if (background < 0 || applications < 0 || users < 0)
-        return fail(AST_BACKEND_MODULE, "INSTALLER_MODULE_LOAD_FAILED");
+    if (background < 0 || users < 0)
+        return fail(AST_BACKEND_MODULE, "INSTALLER_MODULE_LOAD_FAILED: bgft=0x%08X app=0x%08X user=0x%08X load=0x%08X/0x%08X deps=0x%08X/0x%08X",
+                    (unsigned)background, (unsigned)applications, (unsigned)users, (unsigned)bgft_load, (unsigned)app_load,
+                    (unsigned)core_load, (unsigned)common_load);
     if (symbol(background, "sceBgftServiceInit", &api.bgft_init))
         BIND(background, bgft_init, "sceBgftServiceIntInit");
     BIND(background, bgft_register, "sceBgftServiceIntDebugDownloadRegisterPkg");
     BIND(background, bgft_start, "sceBgftServiceDownloadStartTask");
     BIND(background, bgft_progress, "sceBgftServiceDownloadGetProgress");
-    BIND(applications, app_init, "sceAppInstUtilInitialize");
-    BIND(applications, app_exists, "sceAppInstUtilAppExists");
+    /* AppInstUtil is an optional confirmation service, not a BGFT dependency.
+     * Some firmware contexts expose BGFT but cannot load AppInstUtil. Never
+     * promote a finished download to installed when confirmation is absent. */
+    api.app_init = NULL;
+    api.app_exists = NULL;
+    if (applications < 0 ||
+        symbol(applications, "sceAppInstUtilInitialize", &api.app_init) ||
+        symbol(applications, "sceAppInstUtilAppExists", &api.app_exists)) {
+        api.app_init = NULL;
+        api.app_exists = NULL;
+    }
     BIND(users, user_init, "sceUserServiceInitialize");
     BIND(users, initial_user, "sceUserServiceGetInitialUser");
     clear_error();
@@ -468,12 +488,19 @@ int ast_backend_init(void) {
 
 static int init_installer(void) {
     if (installer_ready) return 0;
+#ifndef AST_BACKEND_HOST_TEST
+    int privilege_result = ast_privileges_prepare();
+    if (privilege_result)
+        return fail(AST_BACKEND_SERVICE, "INSTALLER_PRIVILEGES_FAILED: %d", privilege_result);
+#endif
     int result = resolve_installer();
     if (result) return result;
-    if (!application_service_ready) {
+    if (!application_service_ready && api.app_init && api.app_exists) {
         result = api.app_init();
-        if (result < 0) return fail(AST_BACKEND_SERVICE, "APP_SERVICE_INIT_FAILED: 0x%08X", (unsigned)result);
-        application_service_ready = 1;
+        if (result < 0) {
+            api.app_init = NULL;
+            api.app_exists = NULL;
+        } else application_service_ready = 1;
     }
     bgft_heap = calloc(1, 1024 * 1024);
     if (!bgft_heap) return fail(AST_BACKEND_CAPACITY, "OUT_OF_MEMORY");
@@ -490,15 +517,17 @@ static int init_installer(void) {
 
 static int request_timeouts(int template_id, uint64_t deadline) {
     uint32_t remaining = remaining_us(deadline);
-    if (remaining < 5000000) return fail(AST_BACKEND_TIMEOUT, "REQUEST_TIMEOUT");
-    uint32_t slice = remaining / 5;
+    if (remaining < 6000000) return fail(AST_BACKEND_TIMEOUT, "REQUEST_TIMEOUT");
+    /* Allow one resolver retry within the same overall request budget. */
+    uint32_t slice = remaining / 6;
     if (slice > 5000000) slice = 5000000;
+    const char *operation = "resolve";
     int result = api.set_resolve_timeout(template_id, slice);
-    if (!result) result = api.set_resolve_retry(template_id, 0);
-    if (!result) result = api.set_connect_timeout(template_id, slice);
-    if (!result) result = api.set_send_timeout(template_id, slice);
-    if (!result) result = api.set_recv_timeout(template_id, slice);
-    if (result) return fail(AST_BACKEND_HTTP, "HTTP_TIMEOUT_CONFIGURATION_FAILED: 0x%08X", (unsigned)result);
+    if (!result) { operation = "resolve_retry"; result = api.set_resolve_retry(template_id, 1); }
+    if (!result) { operation = "connect"; result = api.set_connect_timeout(template_id, slice); }
+    if (!result) { operation = "send"; result = api.set_send_timeout(template_id, slice); }
+    if (!result) { operation = "receive"; result = api.set_recv_timeout(template_id, slice); }
+    if (result) return fail(AST_BACKEND_HTTP, "HTTP_TIMEOUT_%s_FAILED: 0x%08X", operation, (unsigned)result);
     return 0;
 }
 
@@ -528,10 +557,14 @@ static int get_remote(const char *url, unsigned char *out, size_t capacity,
         if (template_id < 0) { result = fail(AST_BACKEND_HTTP, "HTTP_TEMPLATE_FAILED: 0x%08X", (unsigned)template_id); goto cleanup; }
         result = request_timeouts(template_id, deadline);
         if (result) goto cleanup;
-        if (api.set_redirect(template_id, 0) || api.set_cookie(template_id, 0) ||
-            api.set_auth(template_id, 0) || api.set_proxy(template_id, 0, 0, NULL, 0) ||
-            api.set_header_max(template_id, AST_RESPONSE_HEADERS_MAX)) {
-            result = fail(AST_BACKEND_HTTP, "HTTP_POLICY_CONFIGURATION_FAILED"); goto cleanup;
+        const char *policy = "redirect";
+        int policy_result = api.set_redirect(template_id, 0);
+        if (!policy_result) { policy = "cookie"; policy_result = api.set_cookie(template_id, 0); }
+        if (!policy_result) { policy = "auth"; policy_result = api.set_auth(template_id, 0); }
+        if (!policy_result) { policy = "proxy"; policy_result = api.set_proxy(template_id, 0, 0, "", 0); }
+        if (!policy_result) { policy = "header_limit"; policy_result = api.set_header_max(template_id, AST_RESPONSE_HEADERS_MAX); }
+        if (policy_result) {
+            result = fail(AST_BACKEND_HTTP, "HTTP_POLICY_%s_FAILED: 0x%08X", policy, (unsigned)policy_result); goto cleanup;
         }
         /* SERVER_VERIFY | CN_CHECK | NOT_AFTER | NOT_BEFORE | KNOWN_CA. */
         if (api.tls_enable(template_id, 0x3d)) { result = fail(AST_BACKEND_TLS, "TLS_VERIFICATION_CONFIGURATION_FAILED"); goto cleanup; }
@@ -657,6 +690,8 @@ static int package_info(const unsigned char *header, size_t length, uint64_t rem
         return fail(AST_BACKEND_PACKAGE, "INVALID_PACKAGE_SIZE");
     if (!remote_size || remote_size != out->size)
         return fail(AST_BACKEND_SIZE, "SOURCE_PACKAGE_SIZE_MISMATCH");
+    for (unsigned i = 0; i < 32; ++i)
+        snprintf(out->digest + i * 2, 3, "%02x", header[0xfe0 + i]);
     return 0;
 }
 
@@ -726,10 +761,14 @@ int ast_install(const char *url, const char *name, const char *expected_title_id
     if (info.size != expected_size) return fail(AST_BACKEND_SIZE, "PACKAGE_SIZE_MISMATCH");
     result = init_installer();
     if (result) return result;
-    int exists = 0;
-    result = api.app_exists(info.title_id, &exists);
-    if (result < 0) return fail(AST_BACKEND_SERVICE, "INSTALLED_TITLE_CHECK_FAILED: 0x%08X", (unsigned)result);
-    if (exists) return fail(AST_BACKEND_ALREADY_INSTALLED, "ALREADY_INSTALLED: existing application kept");
+    if (api.app_exists) {
+        int exists = 0;
+        result = api.app_exists(info.title_id, &exists);
+        if (result < 0) return fail(AST_BACKEND_SERVICE, "INSTALLED_TITLE_CHECK_FAILED: 0x%08X", (unsigned)result);
+        if (exists) return fail(AST_BACKEND_ALREADY_INSTALLED, "ALREADY_INSTALLED: existing application kept");
+    }
+    /* BGFT still rejects an installed-title conflict. Do not use overwrite,
+     * uninstall or conflict-retry options when the optional precheck is absent. */
     int user = -1;
     result = api.initial_user(&user);
     if (result < 0) {
@@ -746,7 +785,10 @@ int ast_install(const char *url, const char *name, const char *expected_title_id
     parameters.user_id = user;
     parameters.entitlement_type = 5;
     parameters.id = info.content_id;
-    parameters.url = final_url;
+    char manifest_url[128];
+    if (ast_manifest_publish(final_url, info.digest, info.size, manifest_url, sizeof(manifest_url)))
+        return fail(AST_BACKEND_SERVICE, "INSTALL_MANIFEST_FAILED");
+    parameters.url = manifest_url;
     parameters.extra_url = "";
     parameters.name = name;
     parameters.icon = "";
@@ -807,6 +849,8 @@ int ast_progress(int task_id, AstProgress *out) {
     /* Registration and 100% download alone do not prove installation. */
     if (!out->error && out->total == task->size && out->transferred == out->total &&
         out->preparing == 100 && out->copying == 100) {
+        if (!api.app_exists)
+            return fail(AST_BACKEND_PROGRESS, "INSTALL_CONFIRMATION_UNAVAILABLE: check PS4 Notifications and home screen");
         int exists = 0;
         result = api.app_exists(task->title_id, &exists);
         if (result < 0) return fail(AST_BACKEND_PROGRESS, "INSTALL_CONFIRMATION_FAILED: 0x%08X", (unsigned)result);

@@ -16,9 +16,17 @@ typedef struct {
 static MockResponse responses[8];
 static unsigned response_count, current_response, connections;
 static int dns_private, tls_result, native_send_result, slow_read;
-static int app_exists_value, start_result, register_result, registration_count;
+static int app_exists_value, start_result, register_result, registration_count, start_count;
 static unsigned tls_flags, range_headers, closed_requests;
 static char connected_urls[8][AST_URL_MAX], registered_url[AST_URL_MAX];
+static char manifest_piece_url[AST_URL_MAX];
+int ast_manifest_publish(const char *url, const char *digest, uint64_t size,
+                         char *local_url, size_t capacity) {
+    assert(strlen(digest) == 64 && size == 229376);
+    strcpy(manifest_piece_url, url);
+    snprintf(local_url, capacity, "http://127.0.0.1:12841/test.json");
+    return 0;
+}
 static BgftProgress mocked_progress;
 static int progress_result;
 
@@ -41,8 +49,9 @@ static int mock_template(int context, const char *agent, int version, int auto_p
 }
 static int mock_policy(int id, int value) { (void)id; assert(value == 0); return 0; }
 static int mock_proxy(int id, int http_config, int wlan_config, const char *host, uint16_t port) {
-    (void)id; assert(http_config == 0 && wlan_config == 0 && !host && !port); return 0;
+    (void)id; assert(http_config == 0 && wlan_config == 0 && host && !*host && !port); return 0;
 }
+static int mock_retry(int id, int value) { (void)id; assert(value == 1); return 0; }
 static int mock_timeout(int id, uint32_t value) { (void)id; assert(value > 0 && value <= 5000000); return 0; }
 static int mock_header_max(int id, uint64_t value) { (void)id; assert(value == 16384); return 0; }
 static int mock_tls(int id, uint32_t flags) { (void)id; tls_flags = flags; return tls_result; }
@@ -95,12 +104,18 @@ static int mock_register(BgftDownload *parameters, int *task_id) {
     *task_id = register_result ? -1 : 73;
     return register_result;
 }
-static int mock_start(int task_id) { assert(task_id == 73); return start_result; }
+static int mock_start(int task_id) { assert(task_id == 73); ++start_count; return start_result; }
 static int mock_progress(int task_id, BgftProgress *out) {
     assert(task_id == 73); *out = mocked_progress; return progress_result;
 }
+static int mock_bgft_init(BgftInit *parameters) {
+    assert(parameters->heap && parameters->heap_size == 1024 * 1024); return 0;
+}
+static int mock_app_init_failure(void) { return -1; }
 
 static void reset(void) {
+    free(bgft_heap); bgft_heap = NULL;
+    application_service_ready = 0;
     memset(&api, 0, sizeof(api));
     memset(tasks, 0, sizeof(tasks));
     memset(responses, 0, sizeof(responses));
@@ -109,7 +124,7 @@ static void reset(void) {
     registered_url[0] = 0;
     clock_value = 0; response_count = current_response = connections = 0;
     dns_private = tls_result = native_send_result = slow_read = 0;
-    app_exists_value = start_result = register_result = registration_count = 0;
+    app_exists_value = start_result = register_result = registration_count = start_count = 0;
     tls_flags = range_headers = closed_requests = 0;
     progress_result = 0;
     ready = installer_ready = 1;
@@ -118,7 +133,8 @@ static void reset(void) {
     api.template_create = mock_template; api.template_delete = mock_simple;
     api.connection_create = mock_connection; api.connection_delete = mock_simple;
     api.request_create = mock_request; api.request_delete = mock_delete_request; api.request_abort = mock_simple;
-    api.set_redirect = api.set_cookie = api.set_auth = api.set_resolve_retry = mock_policy;
+    api.set_redirect = api.set_cookie = api.set_auth = mock_policy;
+    api.set_resolve_retry = mock_retry;
     api.set_proxy = mock_proxy;
     api.set_resolve_timeout = api.set_connect_timeout = api.set_send_timeout = api.set_recv_timeout = mock_timeout;
     api.set_header_max = mock_header_max; api.tls_enable = mock_tls;
@@ -241,7 +257,8 @@ static void test_packages_and_installation(void) {
     response(206, package_headers, header, sizeof(header));
     assert(!ast_install("https://github.com/a.pkg", "Example", "ASTR00001", 229376, &task_id));
     assert(task_id == 73 && range_headers == 2 && registration_count == 1);
-    assert(!strcmp(registered_url, "https://release-assets.githubusercontent.com/a.pkg?sig=keep%2Fme"));
+    assert(!strcmp(registered_url, "http://127.0.0.1:12841/test.json"));
+    assert(!strcmp(manifest_piece_url, "https://release-assets.githubusercontent.com/a.pkg?sig=keep%2Fme"));
     AstProgress progress;
     assert(!ast_progress(task_id, &progress) && !progress.installed);
     mocked_progress.length_total = mocked_progress.transferred_total = 229376;
@@ -251,6 +268,23 @@ static void test_packages_and_installation(void) {
     assert(!ast_progress(task_id, &progress) && !progress.installed);
     app_exists_value = 1;
     assert(!ast_progress(task_id, &progress) && progress.installed);
+    /* Missing optional AppInstUtil must neither block BGFT nor claim installed. */
+    reset(); api.app_exists = NULL; installer_ready = 0; api.bgft_init = mock_bgft_init;
+    response(206, package_headers, header, sizeof(header));
+    assert(!ast_install("https://github.com/a.pkg", "Example", "ASTR00001", 229376, &task_id));
+    assert(task_id == 73 && registration_count == 1 && start_count == 1);
+    mocked_progress.length_total = 229376; mocked_progress.transferred_total = 8192;
+    assert(!ast_progress(task_id, &progress) && !progress.installed && progress.transferred == 8192);
+    mocked_progress.transferred_total = 229376;
+    mocked_progress.preparing = mocked_progress.copying = 100;
+    assert(ast_progress(task_id, &progress) == AST_BACKEND_PROGRESS && !progress.installed);
+    assert(strstr(ast_backend_error(), "INSTALL_CONFIRMATION_UNAVAILABLE"));
+    reset(); installer_ready = 0; api.bgft_init = mock_bgft_init; api.app_init = mock_app_init_failure;
+    assert(!init_installer() && installer_ready && !api.app_exists);
+    reset(); api.app_exists = NULL; register_result = (int)0x80990088U;
+    response(206, package_headers, header, sizeof(header));
+    assert(ast_install("https://github.com/a.pkg", "Example", "ASTR00001", 229376, &task_id) == AST_BACKEND_ALREADY_INSTALLED);
+    assert(registration_count == 1 && start_count == 0 && task_id == -1);
     reset(); start_result = -3;
     response(206, package_headers, header, sizeof(header));
     assert(ast_install("https://github.com/a.pkg", "Example", "ASTR00001", 229376, &task_id) == AST_BACKEND_START);

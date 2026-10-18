@@ -34,7 +34,7 @@ int32_t sceWebBrowserDialogOpen(const AstBrowserParam *param)
     assert(param->callback == NULL && param->ime == NULL && param->webview == NULL);
     if (param->mode == 2) {
         assert(param->width == 1920 && param->height == 1080);
-        assert(param->control == 0x1f);
+        assert(param->control == UINT32_C(0x1f));
         return reject_custom ? (int32_t)UINT32_C(0x80b8000a) : 0;
     }
     assert(param->mode == 1 && param->width == 0 && param->height == 0);
@@ -42,6 +42,7 @@ int32_t sceWebBrowserDialogOpen(const AstBrowserParam *param)
     return reject_default ? (int32_t)UINT32_C(0x80b8000f) : 0;
 }
 int32_t sceWebBrowserDialogUpdateStatus(void) { return current_status; }
+int32_t sceWebBrowserDialogGetResult(AstBrowserResult *result) { result->result = 0; return 0; }
 int32_t sceWebBrowserDialogTerminate(void) { terminate_calls++; return 0; }
 
 static void close_and_check(void)
@@ -51,7 +52,7 @@ static void close_and_check(void)
     ast_browser_tick();
     assert(terminate_calls == count + 1);
     assert(!ast_browser_running());
-    assert(strcmp(ast_browser_error(), "Browser dialog closed") == 0);
+    assert(strstr(ast_browser_error(), "Browser dialog closed: API 0x00000000 result 0x00000000"));
     ast_browser_tick();
     assert(terminate_calls == count + 1);
     current_status = ORBIS_COMMON_DIALOG_STATUS_RUNNING;

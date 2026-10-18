@@ -10,9 +10,9 @@
 
 ## Status: desktop preview + native test build
 
-**The published v0.3.0-alpha.1 release remains a desktop preview.** Its downloads are saved on the computer. The [0.4.1-alpha.1 native test build](native/README.md) compiles and packages as `ASTR00001`, with its own PS4 HTTP/TLS/BGFT implementation and a new TV interface. Its 6.3 MiB PKG was transferred to the test console's USB and verified by readback. **The tester confirmed installation and interface launch on PS4; device startup logs were retrieved. Native downloads, game installation and PC-off operation remain unverified; no verified native release is published.**
+**The published v0.3.0-alpha.1 release remains a desktop preview.** Its downloads are saved on the computer. The [native test build](native/README.md), **0.4.10-alpha.1**, runs as `ASTR00001` with its own PS4 HTTP/TLS/BGFT adapter and TV interface. On PS4 13.52, actual device tests verified controller selection, native HTTPS inspection, the full 2048 download, installed-title confirmation, game launch and tile movement. Arabic/English and dark/sand switching also worked on the console. **2048's own Quit action crashed with `CE-34878-0`; its cause is unconfirmed. Literal PC-off testing and broad firmware compatibility remain open. No verified native binary release is published.**
 
-The intended product runs on PS4 without a PC. The native runtime is implemented; actual console acceptance testing remains open. PS3 and PS5 games do not become playable on PS4 by adding a catalog.
+The native runtime downloads directly on PS4; the computer provided Remote Play viewing/control during this test. A separate test with the computer powered off is still required. PS3 and PS5 games do not become playable on PS4 by adding a catalog.
 
 ## What works in the desktop preview
 
@@ -61,7 +61,7 @@ Automated GitHub Actions are not enabled yet. [A workflow template](docs/github-
 
 ## Current limits
 
-- The desktop preview still downloads to the computer. The separate native test build has not passed console acceptance testing. No PS5 support, controller or firmware compatibility claim yet.
+- The desktop preview still downloads to the computer. The separate native test build passed one developer-game download/install/play flow; PC-off, interruption/recovery and broad compatibility testing remain open. No PS5 support claim.
 - Catalog categories are organizational. PS1/PS2/PSP entries can be inspected only when already packaged in a PS4 container; this app does not convert or emulate them.
 - Direct public HTTP(S) URLs only. Landing-page resolvers, login-required sources, archive extraction and debrid services are not implemented.
 - HTTPS certificate validation stays enabled. HTTPS-to-HTTP redirects are rejected. An explicitly supplied HTTP source is labeled unencrypted.
