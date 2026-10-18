@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "astora-homebrew",
+  "name": "تطبيقات مجانية • مصادر المطوّرين",
+  "items": [
+    {
+      "id": "apollo-save-tool", "title": "Apollo Save Tool", "platform": "PS4", "kind": "app",
+      "titleId": "APOL00004", "version": "2.4.0", "size": 22806528,
+      "description": "أداة لإدارة ملفات الحفظ. التنزيل من إصدار المطوّر على GitHub.",
+      "homepage": "https://github.com/bucanero/apollo-ps4",
+      "sha256": "ec34add4d2857fa3c947ed5666735a5c35ddb3e47d8be925b36e9ad408f7c090",
+      "sources": [{ "name": "GitHub • bucanero", "url": "https://github.com/bucanero/apollo-ps4/releases/download/v2.4.0/IV0000-APOL00004_00-APOLLO0000000PS4.pkg" }]
+    },
+    {
+      "id": "ezremote-client", "title": "ezRemote Client", "platform": "PS4", "kind": "app", "titleId": "RMTC00001", "version": "2.07", "size": 52756480,
+      "description": "عميل لنقل الملفات وإدارة التخزين عبر الشبكة. راجع متطلبات المطوّر قبل التثبيت.",
+      "homepage": "https://github.com/cy33hc/ps4-ezremote-client",
+      "sha256": "85fb1b09d0e09c796f826dfa70cf521114e8ce87b4b786aba0462a0163e4b73f",
+      "sources": [{ "name": "GitHub • cy33hc", "url": "https://github.com/cy33hc/ps4-ezremote-client/releases/download/2.07/ezremote_client.pkg" }]
+    },
+    {
+      "id": "ps4-games-installer", "title": "PS4 Games Installer", "platform": "PS4", "kind": "app",
+      "titleId": "PGIN00001", "version": "r34", "size": 6619136,
+      "description": "مثبّت حزم PS4. أداة تثبيت؛ لا تتضمن قائمة ألعاب.",
+      "homepage": "https://github.com/e1z0/PS4-Games-Installer",
+      "sha256": "48998dff70bd06cd686880d830627cf80892520e4b0a93b3de81534d9999cc55",
+      "sources": [{ "name": "GitHub • e1z0", "url": "https://github.com/e1z0/PS4-Games-Installer/releases/download/r34/PS4Game_installer-r34.pkg" }]
+    }
+  ]
+}

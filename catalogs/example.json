@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "my-homebrew-list",
+  "name": "مكتبتي التجريبية",
+  "items": [
+    {
+      "id": "apollo-save-tool",
+      "title": "Apollo Save Tool",
+      "platform": "PS4",
+      "kind": "app",
+      "titleId": "APOL00004",
+      "version": "2.4.0",
+      "size": 22806528,
+      "description": "أداة لإدارة ملفات الحفظ. التنزيل من إصدار المطوّر على GitHub.",
+      "homepage": "https://github.com/bucanero/apollo-ps4",
+      "sha256": "ec34add4d2857fa3c947ed5666735a5c35ddb3e47d8be925b36e9ad408f7c090",
+      "sources": [
+        {
+          "name": "GitHub • bucanero",
+          "url": "https://github.com/bucanero/apollo-ps4/releases/download/v2.4.0/IV0000-APOL00004_00-APOLLO0000000PS4.pkg"
+        }
+      ]
+    }
+  ]
+}

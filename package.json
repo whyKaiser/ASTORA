@@ -1,0 +1,15 @@
+{
+  "name": "astora",
+  "version": "0.1.0-alpha.1",
+  "private": true,
+  "description": "Arabic-first catalog and PKG inspection foundation for ASTORA",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test/*.test.mjs",
+    "check": "node --check server.mjs && node --check web/app.js",
+    "test:live": "node scripts/inspect-bundled.mjs"
+  },
+  "license": "MIT"
+}
