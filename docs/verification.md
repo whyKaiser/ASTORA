@@ -1,6 +1,6 @@
 # Verification record
 
-Date: 2026-10-18. Desktop environment: Windows. Local result: **35 checks passed, 0 failed** on both **Node.js 25.6.0** and **Node.js 22.23.3**.
+Date: 2026-10-18. Desktop environment: Windows. The 0.2.0-alpha.1 baseline passed **35 checks, 0 failed** on both **Node.js 25.6.0** and **Node.js 22.23.3**. Version-specific verification follows below; 0.3.0-alpha.1 was rerun on Node.js 25.6.0.
 
 ## Automated
 
@@ -51,3 +51,12 @@ RTL ArrowLeft moves focus from the first card to the next visually left card. Th
 This release did not perform another console installation or a console frame-rate measurement. The standalone native acceptance gate remains open.
 
 A live preflight through the 0.2 UI again identified PS4 Games Installer r34 as PGIN00001 over HTTPS with resume prerequisites. Closing the result dialog restored keyboard focus to its library card. No duplicate full-file download was started.
+
+## 0.3.0-alpha.1 identity and appearance verification
+
+- All 35 regression checks passed on Node.js 25.6.0. Syntax checks include the new early-theme script.
+- The source and copied logo have identical SHA-256: `496aed3a014780681de3605493672c7ec409dd4d726880a938338156233eba2b`. Original dimensions remain 690 × 678.
+- Actual browser switching confirmed dark and sand themes. Sand persists across reload, with computed body background `rgb(234, 217, 184)` and a successfully decoded original logo.
+- Arabic and English layouts, the opening-preview dialog, library cards and narrow 390 × 844 viewport were inspected. Both measured content/scroll widths at 375 CSS pixels, without horizontal overflow. Viewport restored after testing.
+- Native PS4 icon export/package integration was not performed. No console changes were made by this update.
+- Final browser logs contained no warning/error entries.

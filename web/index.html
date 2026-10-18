@@ -1,13 +1,13 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#0c141b">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#0e0c0a">
   <title>ASTORA — عالمك، على طريقتك</title>
-  <link rel="icon" href="/mark.svg" type="image/svg+xml"><link rel="stylesheet" href="/style.css"><script type="module" src="/app.js"></script>
+  <link rel="icon" href="/assets/astora-logo.png" type="image/png"><script src="/appearance.js"></script><link rel="stylesheet" href="/style.css"><script type="module" src="/app.js"></script>
 </head>
 <body>
   <aside class="sidebar">
-    <a class="brand" href="/" data-i18n-label="home"><img src="/mark.svg" alt="" width="43" height="43"><span dir="ltr">ASTORA<small>ROOTED. REIMAGINED.</small></span></a>
+    <a class="brand" href="/" data-i18n-label="home"><span class="brand-symbol" aria-hidden="true"><img src="/assets/astora-logo.png" alt=""></span><span dir="ltr">ASTORA<small>FIRE. FORM. IDENTITY.</small></span></a>
     <div class="sidebar-label" data-i18n="space"></div>
     <nav data-i18n-label="navigation">
       <button class="nav-button active" data-view="library"><span class="nav-icon" aria-hidden="true">▦</span><span data-i18n="library"></span><span id="library-count" class="count">0</span></button>
@@ -15,15 +15,15 @@
       <button class="nav-button" data-view="downloads"><span class="nav-icon" aria-hidden="true">↓</span><span data-i18n="downloads"></span><span id="download-count" class="count">0</span></button>
       <button class="nav-button" data-view="about"><span class="nav-icon" aria-hidden="true">◎</span><span data-i18n="about"></span></button>
     </nav>
-    <div class="sidebar-bottom"><div class="sidebar-emblem" aria-hidden="true">✧</div><span class="stage"><i></i><span data-i18n="development"></span></span><p data-i18n="origin"></p><div class="version" dir="ltr">v0.2.0-alpha.1 <span>by whyKaiser</span></div></div>
+    <div class="sidebar-bottom"><div class="sidebar-weave" aria-hidden="true"></div><span class="stage"><i></i><span data-i18n="development"></span></span><p data-i18n="origin"></p><div class="version" dir="ltr">v0.3.0-alpha.1 <span>by whyKaiser</span></div></div>
   </aside>
   <main>
-    <header class="topbar"><div class="breadcrumb"><span dir="ltr">ASTORA</span><span>/</span><b id="page-label"></b></div><div class="preferences"><button class="preference" id="motion-toggle" aria-pressed="false"></button><button class="preference language-toggle" id="language-toggle" lang="en">English</button></div></header>
+    <header class="topbar"><div class="breadcrumb"><span dir="ltr">ASTORA</span><span>/</span><b id="page-label"></b></div><div class="preferences"><button class="preference" id="theme-toggle"></button><button class="preference" id="motion-toggle" aria-pressed="false"></button><button class="preference language-toggle" id="language-toggle" lang="en">English</button></div></header>
     <section id="view-library" class="view">
       <div class="section-kicker"><span data-i18n="liveLibrary"></span><span class="preview-badge"><i></i><span data-i18n="preview"></span><b>PRE-ALPHA</b></span></div>
       <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-copy"><div class="eyebrow"><span class="tiny-star" aria-hidden="true">✦</span><span data-i18n="chapter"></span></div><h1 id="hero-title"><span data-i18n="heroFirst"></span><br><em data-i18n="heroLast"></em></h1><p data-i18n="heroCopy"></p><button class="primary" id="explore"><span data-i18n="explore"></span><span class="direction-arrow" aria-hidden="true">↗</span></button><div class="hero-note" data-i18n="heroNote"></div></div>
-        <div class="hero-art" aria-hidden="true"><div class="halo"></div><img class="portal" src="/assets/portal.svg" alt=""><div class="art-caption"><span>أستورا</span><small>THE ART OF DISCOVERY</small></div><span class="art-coordinate">ORIGIN / CHAPTER 001</span></div>
+        <div class="hero-copy"><div class="eyebrow"><span class="thread-accent" aria-hidden="true"></span><span data-i18n="chapter"></span></div><h1 id="hero-title"><span data-i18n="heroFirst"></span><br><em data-i18n="heroLast"></em></h1><p data-i18n="heroCopy"></p><button class="primary" id="explore"><span data-i18n="explore"></span><span class="direction-arrow" aria-hidden="true">↗</span></button><div class="hero-note" data-i18n="heroNote"></div></div>
+        <figure class="hero-art"><div class="identity-frame"><img class="identity-logo" src="/assets/astora-logo.png" alt="ASTORA" width="690" height="678"></div><figcaption><span data-i18n="brandSignature"></span><button class="launch-link" id="launch-preview" data-i18n="launchPreview"></button></figcaption></figure>
         <div class="hero-footer"><span><i>01</i><span data-i18n="featureLanguage"></span></span><span><i>02</i><span data-i18n="featureSources"></span></span><span><i>03</i><span data-i18n="featureCheck"></span></span></div>
       </section>
       <div class="section-heading" id="collection"><div><div class="eyebrow muted" data-i18n="collection"></div><h2><span data-i18n="inLibrary"></span><span id="result-count">0</span></h2></div><button class="secondary" data-import><span aria-hidden="true">＋</span><span data-i18n="addSource"></span></button></div>
@@ -40,6 +40,7 @@
   </main>
   <dialog id="details-dialog"><button class="close" data-i18n-label="close">×</button><div class="eyebrow muted" data-i18n="detailsEyebrow"></div><h2 id="detail-title" dir="auto"></h2><p id="detail-description" dir="auto"></p><div id="detail-meta" class="metadata"></div><a id="detail-homepage" class="text-link" target="_blank" rel="noreferrer" data-i18n="homepage"></a><div class="dialog-section"><h3 data-i18n="downloadSources"></h3><div id="inspection-results"></div><p class="subtle" data-i18n="inspectionNote"></p></div><div class="dialog-actions"><button class="primary" id="inspect-button" data-i18n="inspect"></button><button class="secondary" id="download-button" disabled data-i18n="desktopDownload"></button></div><p id="detail-feedback" class="feedback" role="status"></p></dialog>
   <dialog id="import-dialog"><button class="close" data-i18n-label="close">×</button><div class="eyebrow muted" data-i18n="importEyebrow"></div><h2 data-i18n="addSource"></h2><p data-i18n="importCopy"></p><form id="url-form"><label for="catalog-url" data-i18n="catalogUrl"></label><div class="input-row"><input id="catalog-url" type="url" placeholder="https://example.org/catalog.json" dir="ltr" required><button class="primary" type="submit" data-i18n="import"></button></div></form><div class="separator" data-i18n="localFile"></div><label class="file-picker" for="catalog-file"><span data-i18n="chooseFile"></span><input id="catalog-file" type="file" accept=".json,application/json"></label><details><summary data-i18n="example"></summary><pre dir="ltr">{"schemaVersion":1,"id":"my-library","name":"My library","items":[{"id":"my-app","title":"My app","platform":"PS4","kind":"app","sources":[{"name":"Developer","url":"https://example.org/app.pkg"}]}]}</pre></details><p class="subtle" data-i18n="localNote"></p><p id="import-feedback" class="feedback" role="status"></p></dialog>
+  <dialog id="launch-dialog" class="launch-dialog" data-i18n-label="launchLabel"><button class="close" data-i18n-label="close">×</button><img src="/assets/astora-logo.png" alt="ASTORA" width="690" height="678"><div class="launch-weave" aria-hidden="true"></div><button id="enter-app" class="primary" data-i18n="enterApp"></button></dialog>
   <div id="toast" class="toast" role="status" hidden></div>
 </body>
 </html>

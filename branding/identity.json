@@ -1,0 +1,14 @@
+{
+  "name": "ASTORA",
+  "sourceAsset": "../web/assets/astora-logo.png",
+  "sourceSha256": "496aed3a014780681de3605493672c7ec409dd4d726880a938338156233eba2b",
+  "sourceDimensions": { "width": 690, "height": 678 },
+  "sourceUnmodified": true,
+  "palette": { "black": "#000000", "red": "#c42522", "gold": "#e3b559", "sandSurface": "#ead9b8" },
+  "ornament": "Original Sadu-inspired woven bands; no arch or eight-point emblem",
+  "webUses": ["Library identity tile", "Sidebar mark", "Browser icon", "App-opening preview"],
+  "consoleTargets": [
+    { "purpose": "PS4 home-screen application icon", "targetName": "sce_sys/icon0.png", "status": "Native export and package integration pending" },
+    { "purpose": "ASTORA application opening", "status": "Native runtime integration pending" }
+  ]
+}

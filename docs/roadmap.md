@@ -14,6 +14,13 @@
 - Indexed bilingual search and 24-card pagination verified with 5000 entries.
 - Visibility-aware transfer polling and source-based standalone architecture research.
 
+## Completed in 0.3.0-alpha.1
+
+- Project-supplied flame logo preserved unchanged and applied to the web identity.
+- Black/red/gold dark theme, warm sand light theme and persistent preference.
+- Sadu-inspired woven ornament replaces architectural arches and the old emblem.
+- App-opening preview and source branding manifest for future console integration.
+
 ## Next: standalone PS4 proof
 
 - Establish a clean OpenOrbis build and native API bindings.

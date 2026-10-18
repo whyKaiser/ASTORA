@@ -1,14 +1,16 @@
 # ASTORA design direction
 
-Arabic roots, calm color and responsive interaction. Original identity and artwork; no third-party store branding or game cover art is embedded.
+Arabic roots, calm color and responsive interaction. The flame logo was supplied for ASTORA; the original bitmap is preserved. No third-party store branding or game cover art is embedded.
 
 ## Visual system
 
-- Ink/navy surfaces (`#0c141b`, `#111e27`), muted teal and champagne (`#dbc49b`).
-- An original arched portal and eight-point geometry, drawn as small local SVGs. Geometry suggests an Arabic visual heritage without depending on a large background image or autoplay video.
+- Black, red (`#c42522`) and gold (`#e3b559`) drawn from the supplied logo. The dark surface is warm black (`#0e0c0a`). Sand light mode uses `#ead9b8`, not white, with darker gold text for contrast.
+- Sadu-inspired woven bands, small original SVG accents. The previous architectural arch and eight-point emblem are removed. The Arabic character comes from textile-like patterns and typography.
+- The supplied logo appears as a complete identity tile, browser icon and opening preview. A CSS viewport shows its flame in the sidebar. The source PNG is unchanged. Native home-screen/icon exports are pending; see `branding/identity.json`.
+- A theme action selects dark or sand mode and persists it. A small local script applies the saved theme before the stylesheet paints; blocked storage falls back to dark.
 - Noto Sans Arabic, bundled under OFL; system Latin font. Text remains real selectable text. No rasterized Arabic headings.
 - Logical CSS properties mirror the sidebar and layout between Arabic RTL and English LTR. Technical identifiers and package filenames retain their direction.
-- Brief focus, hover and view transitions. One slow opacity/transform accent; animation stops when the page is hidden. Reduced motion is saved locally and follows the OS before an explicit choice.
+- Brief focus, hover and view transitions. No continuously animated logo or looping video; animation stops when the page is hidden. Reduced motion is saved locally and follows the OS before an explicit choice.
 
 ## Behavior implemented in this preview
 

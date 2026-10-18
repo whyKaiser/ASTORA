@@ -86,7 +86,7 @@ const server = http.createServer(async (req, res) => {
     const fullPath = resolve(webRoot, `.${decodeURIComponent(path === '/' ? '/index.html' : path)}`);
     if (!fullPath.startsWith(webRoot + sep)) return json(res, 404, { error: 'NOT_FOUND' });
     const data = await readFile(fullPath);
-    const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.ttf': 'font/ttf' };
+    const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.svg': 'image/svg+xml', '.png': 'image/png', '.ttf': 'font/ttf' };
     res.writeHead(200, { 'Content-Type': types[extname(fullPath)] || 'application/octet-stream', 'Cache-Control': 'no-cache' });
     res.end(req.method === 'HEAD' ? undefined : data);
   } catch (error) {

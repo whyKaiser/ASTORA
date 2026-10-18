@@ -6,18 +6,19 @@
 
 ![ASTORA desktop preview](docs/preview.jpg)
 
-[English interface preview](docs/preview-en.jpg) · [Library preview](docs/library.jpg)
+[Sand light mode](docs/preview-sand.jpg) · [English preview](docs/preview-en.jpg) · [Library](docs/library.jpg) · [Opening preview](docs/opening-preview.jpg)
 
 ## Status: desktop pre-alpha
 
-**v0.2.0-alpha.1 is a working desktop preview and package-management foundation. It is not a standalone PS4 application. There is no ASTORA PKG release yet.** Downloads in this version are saved on the computer, not installed on a console.
+**v0.3.0-alpha.1 is a working desktop preview and package-management foundation. It is not a standalone PS4 application. There is no ASTORA PKG release yet.** Downloads in this version are saved on the computer, not installed on a console.
 
 The intended product runs on PS4 without a PC. That requires a native runtime and console testing; neither is claimed complete here. PS3 and PS5 games do not become playable on PS4 by adding a catalog.
 
 ## What works
 
 - Arabic and English, mirrored RTL/LTR layout, saved language and reduced-motion settings.
-- Original ink/teal/champagne identity with Arabic-inspired SVG geometry.
+- Supplied ASTORA flame logo, black/red/gold identity and a warm sand light mode. Theme preference persists.
+- Sadu-inspired woven accents and an app-opening preview; no architectural arch motif.
 - Indexed bilingual search, 24-card pagination, platform filters and keyboard navigation. Tested with a 5000-entry catalog.
 - Multiple named catalogs and multiple download mirrors per item. JSON file or public URL import.
 - Real HTTP preflight: follow redirects, read the first 8 KiB, identify HTML, archives, zero-filled responses, and PS4 PKG headers.
@@ -71,6 +72,6 @@ Automated GitHub Actions are not enabled yet. [A workflow template](docs/github-
 
 `src/` contains original JavaScript modules for catalogs, PS4 header inspection, bounded networking, diagnostics and download recovery. `server.mjs` is the development adapter. `web/` contains the original UI. See [the architecture](docs/architecture.md) for the native work remaining.
 
-Original ASTORA code: MIT. Noto Sans Arabic: SIL Open Font License, included under [third-party/](third-party/Noto-OFL.txt). Linked homebrew tools retain their own authorship and licenses. ASTORA does not include NovaStore or DiPlay source, catalogs or binaries.
+Original ASTORA code: MIT. The project-supplied logo is preserved byte-for-byte; [branding records](branding/README.md) distinguish the implemented web identity from pending native console exports. Noto Sans Arabic: SIL Open Font License, included under [third-party/](third-party/Noto-OFL.txt). Linked homebrew tools retain their own authorship and licenses. ASTORA does not include NovaStore or DiPlay source, catalogs or binaries.
 
 Maintained by [whyKaiser](https://github.com/whyKaiser). Not affiliated with Sony or PlayStation.
