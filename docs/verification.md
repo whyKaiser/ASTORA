@@ -1,6 +1,6 @@
 # Verification record
 
-Date: 2026-10-18. Desktop environment: Windows, Node.js 25.6.0. Local result: **31 checks passed, 0 failed**.
+Date: 2026-10-18. Desktop environment: Windows. Local result: **31 checks passed, 0 failed** on both **Node.js 25.6.0** and **Node.js 22.23.3**.
 
 ## Automated
 
