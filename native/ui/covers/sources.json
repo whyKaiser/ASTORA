@@ -1,0 +1,37 @@
+[
+  {
+    "file": "covers/srb2.png",
+    "source": "https://raw.githubusercontent.com/iHaiDeeZ/SRB2-PS4/main/sce_sys/icon0.png",
+    "sha256": "23cf5a8f1ba1a9311fc995741f684db7f669c04cbd7ff202481499377bf012b2",
+    "license": "GPL-2.0",
+    "licenseFile": "notices/covers/srb2.txt"
+  },
+  {
+    "file": "covers/apollo.png",
+    "source": "https://raw.githubusercontent.com/bucanero/apollo-ps4/main/sce_sys/icon0.png",
+    "sha256": "2678f42f1a9dd716a5fefd511432df47734d8e7be2e776e9a00ba8e930bbff4a",
+    "license": "GPL-3.0",
+    "licenseFile": "notices/covers/apollo.txt"
+  },
+  {
+    "file": "covers/installer.png",
+    "source": "https://raw.githubusercontent.com/e1z0/PS4-Games-Installer/main/assets/icon.png",
+    "sha256": "6ce0089c5f890d7f8c0bed630e9060d6fd85688f1f6b36ca00f0e7f75c5d1a32",
+    "license": "GPL-2.0",
+    "licenseFile": "notices/covers/installer.txt"
+  },
+  {
+    "file": "covers/remote.png",
+    "source": "https://raw.githubusercontent.com/cy33hc/ps4-ezremote-client/master/data/sce_sys/icon0.png",
+    "sha256": "4fc18ed69cb16c48b0e8a90ef4755fd998668a2a73bd1d49c4f63b1c068a08f1",
+    "license": "GPL-2.0",
+    "licenseFile": "notices/covers/remote.txt"
+  },
+  {
+    "file": "covers/2048.png",
+    "source": "https://raw.githubusercontent.com/skidgfx/PS4-2048/master/sce_sys/icon0.png",
+    "sha256": "21806fb8d464d2198985f03a0521149a6834f23d1307f098a96f232ddda01bcf",
+    "license": "MIT",
+    "licenseFile": "notices/covers/2048.txt"
+  }
+]

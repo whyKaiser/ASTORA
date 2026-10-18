@@ -4,6 +4,7 @@
 #include "../vendor/cJSON.h"
 #include "backend.h"
 #include <errno.h>
+#include <dirent.h>
 #include <netinet/in.h>
 #include <pthread.h>
 #include <stdint.h>
@@ -21,6 +22,7 @@
 #define net_send(s, b, n) send(s, b, n, 0)
 #define net_close(s) close(s)
 #else
+#include "privileges.h"
 #include <orbis/Net.h>
 #include <orbis/libkernel.h>
 #define net_socket() sceNetSocket("astora-local", 2, 1, 0)
@@ -120,7 +122,7 @@ static void reply(int fd, int status, const char *type, const void *body,
       "%zu\r\nConnection: close\r\nCache-Control: "
       "no-store\r\nX-Content-Type-Options: nosniff\r\nReferrer-Policy: "
       "no-referrer\r\nContent-Security-Policy: default-src 'self'; script-src "
-      "'self'; style-src 'self'; font-src 'self'; img-src 'self'; connect-src "
+      "'self'; style-src 'self'; font-src 'self'; img-src 'self' https://raw.githubusercontent.com https://github.com https://release-assets.githubusercontent.com; connect-src "
       "'self'; frame-ancestors 'none'; base-uri 'none'\r\n\r\n",
       status, status < 400 ? "OK" : "Error", type, length);
   if (n > 0 && (size_t)n < sizeof(h) && !send_all(fd, h, (size_t)n))
@@ -167,6 +169,66 @@ static unsigned char *read_file(const char *path, size_t cap, size_t *length) {
   b[got] = 0;
   *length = got;
   return b;
+}
+/* USB import is read-only and restricted to two dedicated catalog directories. */
+static int usb_name(const char *name) {
+  if (!bounded(name, 128) || strstr(name, "..")) return 0;
+  size_t n = strlen(name);
+  if (n < 6 || strcmp(name + n - 5, ".json")) return 0;
+  for (size_t i = 0; i < n; i++) {
+    unsigned char c = (unsigned char)name[i];
+    if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+          (c >= '0' && c <= '9') || c == '_' || c == '-' || c == '.')) return 0;
+  }
+  return 1;
+}
+static int usb_directory(unsigned slot, char *path, size_t cap) {
+  struct stat st;
+#ifdef ASTORA_HOST_TEST
+  snprintf(path, cap, "%s/usb%u/ASTORA", state_root, slot);
+#else
+  snprintf(path, cap, "/mnt/usb%u/ASTORA", slot);
+#endif
+  if (slot > 1 || lstat(path, &st) || !S_ISDIR(st.st_mode)) return 0;
+  size_t n = strlen(path);
+  snprintf(path + n, cap - n, "/catalogs");
+  return !lstat(path, &st) && S_ISDIR(st.st_mode);
+}
+static int usb_file(unsigned slot, const char *name, char *path, size_t cap,
+                    size_t *length) {
+  char directory[700]; struct stat st;
+  if (!usb_name(name) || !usb_directory(slot, directory, sizeof(directory))) return 0;
+  snprintf(path, cap, "%s/%s", directory, name);
+  if (lstat(path, &st) || !S_ISREG(st.st_mode) || st.st_size <= 0 ||
+      st.st_size > MAX_JSON) return 0;
+  *length = (size_t)st.st_size;
+  return 1;
+}
+static void usb_catalogs(int fd) {
+#ifndef ASTORA_HOST_TEST
+  int privilege_result = ast_privileges_prepare();
+  if (privilege_result) {
+    error_reply(fd, 400, "USB_ACCESS_FAILED", privilege_result); return;
+  }
+#endif
+  cJSON *list = cJSON_CreateArray(); unsigned count = 0;
+  for (unsigned slot = 0; slot < 2 && count < 20; slot++) {
+    char folder[700];
+    if (!usb_directory(slot, folder, sizeof(folder))) continue;
+    DIR *dir = opendir(folder); if (!dir) continue;
+    struct dirent *entry;
+    while (count < 20 && (entry = readdir(dir))) {
+      char path[900]; size_t len;
+      if (!usb_file(slot, entry->d_name, path, sizeof(path), &len)) continue;
+      cJSON *item = cJSON_CreateObject();
+      cJSON_AddNumberToObject(item, "slot", slot);
+      cJSON_AddStringToObject(item, "name", entry->d_name);
+      cJSON_AddNumberToObject(item, "size", (double)len);
+      cJSON_AddItemToArray(list, item); count++;
+    }
+    closedir(dir);
+  }
+  json_reply(fd, 200, list);
 }
 static int save_jobs(void) {
   char p[600], tmp[600];
@@ -362,7 +424,7 @@ static void handle(int fd) {
     cJSON *o = cJSON_CreateObject();
     cJSON_AddStringToObject(o, "token", token);
     cJSON_AddStringToObject(o, "mode", "ps4-native-experimental");
-    cJSON_AddStringToObject(o, "version", "0.5.0-alpha.1");
+    cJSON_AddStringToObject(o, "version", "0.6.0-alpha.1");
     cJSON_AddBoolToObject(o, "pcRequired", 0);
     json_reply(fd, 200, o);
     return;
@@ -380,6 +442,10 @@ static void handle(int fd) {
     }
     reply(fd, 200, "application/json; charset=utf-8", b, len);
     free(b);
+    return;
+  }
+  if (!strcmp(method, "GET") && !strcmp(path, "/api/usb-catalogs")) {
+    usb_catalogs(fd);
     return;
   }
   if (!strcmp(method, "POST")) {
@@ -483,6 +549,27 @@ static void handle(int fd) {
       cJSON_AddNumberToObject(o, "size", (double)size);
       json_reply(fd, 200, o);
       return;
+    }
+    if (!strcmp(path, "/api/import-usb")) {
+#ifndef ASTORA_HOST_TEST
+      int privilege_result = ast_privileges_prepare();
+      if (privilege_result) {
+        cJSON_Delete(o); error_reply(fd, 400, "USB_ACCESS_FAILED", privilege_result); return;
+      }
+#endif
+      uint64_t slot; char file[900]; size_t length = 0;
+      const char *name = str(o, "name");
+      if (!whole_number(cJSON_GetObjectItemCaseSensitive(o, "slot"), 0, 1, &slot) ||
+          !usb_file((unsigned)slot, name, file, sizeof(file), &length)) {
+        cJSON_Delete(o); error_reply(fd, 400, "INVALID_USB_CATALOG", 0); return;
+      }
+      unsigned char *data = read_file(file, MAX_JSON, &length);
+      cJSON *catalog = data ? strict_json((char *)data, length) : NULL;
+      free(data); cJSON_Delete(o);
+      if (!cJSON_IsObject(catalog)) {
+        cJSON_Delete(catalog); error_reply(fd, 400, "INVALID_CATALOG", 0); return;
+      }
+      json_reply(fd, 200, catalog); return;
     }
     if (!strcmp(path, "/api/import")) {
       const char *url = str(o, "url");
@@ -595,6 +682,8 @@ static void handle(int fd) {
                          ? "text/javascript; charset=utf-8"
                      : ext && !strcmp(ext, ".css") ? "text/css; charset=utf-8"
                      : ext && !strcmp(ext, ".png") ? "image/png"
+                     : ext && (!strcmp(ext, ".jpg") || !strcmp(ext, ".jpeg")) ? "image/jpeg"
+                     : ext && !strcmp(ext, ".webp") ? "image/webp"
                      : ext && !strcmp(ext, ".svg") ? "image/svg+xml"
                      : ext && !strcmp(ext, ".ttf") ? "font/ttf"
                                                    : "application/octet-stream";

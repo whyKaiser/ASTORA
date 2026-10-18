@@ -243,3 +243,50 @@ compatibility remain open. Infinity was not installed or translated: its linked
 installer hostname returned NXDOMAIN through two resolvers, and no application
 installer was established from the public release assets. See the standalone
 research follow-up. No account creation or activation was attempted.
+
+
+## 0.6.0 storefront and catalog management — 2026-10-18
+
+- Replaced all four native views and details with an image-led dark storefront.
+  Actual PS4 13.52 capture: [storefront](ps4-store-0.6.0.png). Five local project
+  covers loaded. Store and Sources navigation opened on the console.
+- Added Sonic Robo Blast 2 v01.02 from iHaiDeeZ's official developer release.
+  Bounded HTTP request returned `206`, package magic `7f434e54`, title
+  `SRBP00001`, content ID `IV0000-SRBP00001_00-SRB2PS4000000000` and declared
+  size `183631872`. Release SHA-256 is recorded in the candidate catalog.
+  **Full native download, installation and gameplay are not yet verified.**
+- Added optional bucanero tools catalog. PS4 Cheats Manager v1.2.2's release
+  header matched `CHTM00777` and `19202048` bytes. The catalog was placed in
+  USB `ASTORA/catalogs/ASTORA-Tools.json` and read back byte-for-byte.
+- The first USB list request on PS4 returned no files despite the file being
+  present via FTP. Existing process credential preparation was only invoked
+  by installer initialization. The revised USB endpoints prepare access before
+  listing/importing, using the same lifecycle restored on normal app exit.
+  This correction compiles and passes host tests; device acceptance is pending.
+- Corrected device candidate: `6619136` bytes, SFO `00.70`, SHA-256
+  `a1ba1f5a17452ec54d8fba404e8a816521f3b71d2a87ff9eb073b6a262ecb237`.
+  Full USB readback matched. Reinstallation returned to Package Installer;
+  the corrected build's first launch is still pending verification.
+- Browser checks: Arabic/English, 1920×1080 and 1280×720, source disable/enable,
+  empty store, game details, search, empty transfers, saved Sonic favorite and
+  persistence after reload. No page errors were recorded. Browser preview
+  explicitly reports that it is not connected to the console.
+- Automated checks: 35 desktop tests, 19 native UI helper/input tests, 25 native
+  HTTP adapter tests. USB tests cover dedicated folders, token enforcement,
+  files over 2 MiB, links, directories, traversal, malformed JSON, trailing data
+  and embedded NUL. Native cross compilation uses warnings as errors.
+- Removed 12 superseded ASTORA package files from the console USB and 12 local
+  output copies, retaining 0.6.0. Historical source, screenshots and logs remain.
+- Test hotspot disappeared after reconnecting. Windows WLAN events reported a
+  driver disconnect, followed by automatic return to the other saved network.
+  The user has been asked to stabilize hotspot compatibility. No console test
+  is claimed successful merely because the host tests pass.
+
+Open limits: USB acceptance, SRB2 runtime, interruption recovery, literal PC-off
+operation, 2048's earlier Quit crash, and wider firmware compatibility. No native
+full-file SHA-256 or measured frame-rate guarantee is claimed.
+
+A final packaging-only rebuild includes all five upstream artwork license texts.
+Its code and UI match the corrected device candidate. Final package SHA-256:
+`5ce52e8c33876ce9a376cafc1338b905d4b08b2f86abff55fbba8bd5427753c5`.
+This packaging rebuild has not yet been transferred or installed on the console.

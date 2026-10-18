@@ -51,3 +51,32 @@ The app does not scrape or copy someone else's private catalog. Maintain your ow
 Existing catalogs remain valid. A catalog may add `"translations":{"ar":{"name":"مكتبتي"},"en":{"name":"My library"}}`. Each item may add `translations.ar` and `translations.en` with optional `title` (160 characters) and `description` (600 characters). Only these languages and fields are accepted. Missing text falls back to the original field. Text is rendered literally, never as HTML.
 
 Search includes both translations regardless of interface language. The UI keeps at most 30 added catalogs; saving also depends on browser storage quota.
+
+
+## Native PS4 0.6.0
+
+The console UI accepts ASTORA catalogs and FPKGi `DATA` objects whose keys are
+package URLs. The desktop schema remains stricter and does not import that
+legacy format. Native limits are 20 catalogs, 5,000 visible unique entries and
+12 mirrors per entry. Duplicate platform/title-ID entries merge mirrors without
+mutating the saved input catalogs. Re-importing an ID updates that catalog;
+source URLs can be refreshed explicitly. Enable/disable and remove operations
+are saved locally, and storage-quota failures leave the current library intact.
+
+Use Sources / From USB. Put JSON files in `ASTORA/catalogs/` on usb0 or usb1.
+ASCII file names may contain letters, digits, `_`, `-`, and single dots, and must
+end in `.json`. Empty files, files over 2 MiB, directories, links and traversal
+paths are rejected. USB import reads only these dedicated directories.
+`console-tools.json` is an example with actual developer package links.
+
+Optional native-only `art` fields accept `cover` and `hero` image URLs on reviewed
+GitHub hosts. PNG, JPEG and WebP are supported; untrusted markup and arbitrary
+image domains are not accepted. Bundled title artwork takes precedence. The
+native downloader still permits only reviewed HTTPS package hosts and base PS4
+packages. A catalog category does not establish platform compatibility.
+
+Sources / Add a game checks a direct package URL on the console, reads its
+identifier and size, and adds it to My additions. This does not start installation.
+Inspect again from the game's details before downloading. Changing a mirror
+invalidates the earlier inspection; the selected inspected URL is the one passed
+to installation.

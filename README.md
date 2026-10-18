@@ -4,13 +4,13 @@
 
 [العربية](README.ar.md) · [Catalog format](docs/catalog-format.md) · [Roadmap](docs/roadmap.md) · [Verification](docs/verification.md) · [Standalone research](docs/standalone-research.md) · [Design](docs/design.md)
 
-![ASTORA 0.5.0 on PS4](docs/ps4-home-0.5.0.png)
+![ASTORA 0.6.0 storefront on PS4](docs/ps4-store-0.6.0.png)
 
 [PS4 transfers](docs/ps4-jobs-0.5.0.png) · [PS4 English](docs/ps4-english-0.5.0.png) · [Earlier desktop preview](docs/preview.jpg)
 
 ## Status: desktop preview + native test build
 
-**The published v0.3.0-alpha.1 release remains a desktop preview.** Its downloads are saved on the computer. The [native test build](native/README.md), **0.5.0-alpha.1**, runs as `ASTR00001` with its own PS4 HTTP/TLS/BGFT adapter and TV interface. On PS4 13.52, actual device tests verified controller selection, native HTTPS inspection, the full 2048 download, installed-title confirmation, game launch and tile movement. Arabic/English switching worked on the console. Version 0.5.0 replaces the earlier layout with a dark-only TV stage, a controller navigation rail and larger reactive cards. **2048's own Quit action crashed with `CE-34878-0`; its cause is unconfirmed. Literal PC-off testing and broad firmware compatibility remain open. No verified native binary release is published.**
+**The published v0.3.0-alpha.1 release remains a desktop preview.** Its downloads are saved on the computer. The [native test build](native/README.md), **0.6.0-alpha.1**, runs as `ASTR00001` with its own PS4 HTTP/TLS/BGFT adapter and TV interface. On PS4 13.52, actual device tests verified controller selection, native HTTPS inspection, the full 2048 download, installed-title confirmation, game launch and tile movement. Arabic/English switching worked on the console. Version 0.6.0 replaces every native page with a dark storefront: horizontal navigation, original project cover art, a reactive featured game, My library, transfers and source management. Added catalogs can be imported from GitHub JSON or a USB catalog folder; sources can be enabled, refreshed or removed, and duplicate games merge their mirrors. USB import and the new SRB2 download still require final device acceptance; see the verification record. **2048's own Quit action crashed with `CE-34878-0`; its cause is unconfirmed. Literal PC-off testing and broad firmware compatibility remain open. No verified native binary release is published.**
 
 The native runtime downloads directly on PS4; the computer provided Remote Play viewing/control during this test. A separate test with the computer powered off is still required. PS3 and PS5 games do not become playable on PS4 by adding a catalog.
 
@@ -30,7 +30,7 @@ The native runtime downloads directly on PS4; the computer provided Remote Play 
 
 The bundled catalog links to three free homebrew tools on their developers' GitHub releases. No game files, private catalogs, credentials or signed download URLs are distributed with this project.
 
-See [free source research](docs/free-sources-research.md) for developer releases and platform limitations. The native catalog adds the free 2048 game for the first device test. Native behavior and limits are documented separately; desktop full-file SHA-256 is not implemented in the native BGFT path.
+See [free source research](docs/free-sources-research.md) for developer releases and platform limitations. The native catalog includes the free 2048 game and Sonic Robo Blast 2. SRB2’s release header, title ID and size are checked; its ASTORA download and gameplay test are pending. An optional tools catalog is supplied in `catalogs/console-tools.json`. Native behavior and limits are documented separately; desktop full-file SHA-256 is not implemented in the native BGFT path.
 
 ## Run
 

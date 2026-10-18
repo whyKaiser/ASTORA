@@ -51,3 +51,12 @@ Catalog availability belongs to its source. A client can explain restricted or d
 - Real transfer percentages with a distinct verified-installed appearance.
 - Browser regression checks at 720p/1080p; see current device verification.
 - Infinity integration is waiting for an accessible application installer; it is not installed or translated.
+
+
+## 0.6.0 update
+
+Implemented native storefront, project covers, favorites, source URL/USB/manual
+entry, catalog enable/disable/refresh/remove, mirror selection, deduplication and
+bounded rendering. Browser and host checks pass. Device USB acceptance and SRB2
+end-to-end download/play remain required; see verification. This update does not
+add PS3/PS5 runtime support or a public commercial-game catalog.

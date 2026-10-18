@@ -42,7 +42,7 @@ static int finish_application(void) {
 /* Independent OpenOrbis process; never loads Nova, DiPlay or a title plugin. */
 int main(void) {
   mkdir("/data/ASTORA", 0777);
-  ast_log("astora_boot_0.5.0", 0);
+  ast_log("astora_boot_0.6.0", 0);
   int rc = ast_backend_init();
   ast_log("backend_init", rc);
   if (rc) {

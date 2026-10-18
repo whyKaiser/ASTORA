@@ -1,6 +1,6 @@
 # ASTORA native PS4 test build
 
-Version **0.5.0-alpha.1**, title ID **ASTR00001**, package version **00.60**.
+Version **0.6.0-alpha.1**, title ID **ASTR00001**, package version **00.70**.
 This is an independent process with its own console loopback server, browser dialog,
 HTTPS client and BGFT adapter. It does not load NovaStore, DiPlay, their plugins,
 or a computer-hosted server. **Actual PS4 testing verified opening the interface,
@@ -10,20 +10,42 @@ movement on PS4 13.52. Its own Quit action crashed with CE-34878-0, cause unconf
 Literal PC-off operation and broader compatibility remain unverified.**
 
 The initial package is 6,619,136 bytes. The bundled catalog links three developer
-utilities and the free 2048 game; game binaries are not bundled. Files download
+utilities, 2048 and Sonic Robo Blast 2; game binaries are not bundled. Files download
 from their developers to the console. No paid hosting or service was configured.
 
-## TV interface update
+## Storefront update
 
-The native interface now uses a focused feature panel and four illustrated cards
-per page, with directional navigation, Arabic/English layout and a dark-only identity
-and saved reduced-motion settings. Version 0.5.0 uses a dark-only console stage, a vertical controller navigation rail and larger reactive cards. Two slow transform/opacity ambient effects add motion; reduced-motion mode disables them, hidden pages pause them, and secondary views pause the background glow. Illustrations are original local SVG assets; no background video is downloaded.
+The native interface now uses horizontal Store / My library / Transfers / Sources
+navigation, authentic project covers, an image-led feature panel, a complete game
+details overlay and saved favorites. Dark mode only. Directional focus and pointer
+movement update the selected cover and game description. No abstract floating
+objects, geometric ornaments, background videos or fabricated ratings are used.
+Store shelves mount five cards at 1080p, four at 720p, or two on narrow viewports;
+My library uses up to two rows. Motion is limited to short focus and opacity
+transitions; reduced motion disables them.
 
-![Native 0.5.0 TV interface — actual PS4 capture](../docs/ps4-home-0.5.0.png)
+![Native storefront — actual PS4 capture](../docs/ps4-store-0.6.0.png)
 
-The screenshot above is from PS4 13.52. The new controller rail, Arabic/English
-switching, Apollo HTTPS inspection and retained installed-job display were checked
-on that device. See the verification record; no measured frame-rate claim is made.
+The first 0.6.0 build opened on PS4 13.52, displaying all five bundled entries and
+the new source-management screen. USB import initially found no files because
+process filesystem access had not been prepared. The follow-up build initializes
+the existing credential lifecycle before USB reads; its device acceptance and
+SRB2 download/play test await reconnection to the test console. Host USB tests
+pass, but do not establish device behavior. See the verification record.
+
+Sources accepts ASTORA and FPKGi JSON catalogs, stable-ID replacement, enable /
+disable, URL refresh and removal. A single package can be inspected and added to
+My additions without starting a download. USB JSON files go under
+`ASTORA/catalogs/` on usb0 or usb1; use ASCII file names ending in `.json`.
+The optional `catalogs/console-tools.json` links PS4 Cheats Manager and Apollo.
+Catalogs and favorites are stored in the console browser's local storage.
+Storage failures are reported rather than silently discarding a change.
+
+Limits: 20 catalogs, 5,000 visible unique entries, 12 sources per entry, 2 MiB per
+import. Only base PS4 packages install; PS3 and PS5 entries remain unsupported.
+Images and packages retain their original authorship. Exact cover source URLs
+and hashes are included in `ui/covers/sources.json` and attribution is included
+under `notices/cover-art.txt`.
 
 Details are populated before their overlay opens. Request errors stay visible,
 closing the panel restores focus, and stale responses cannot replace a newer

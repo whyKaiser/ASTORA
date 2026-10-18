@@ -289,6 +289,35 @@ class ProgressState(ServerFixture):
         self.assertFalse(saved[704]["complete"])
 
 
+class UsbCatalogImport(ServerFixture):
+    def test_usb_import_lists_only_bounded_regular_json_and_requires_token(self):
+        folder = self.state / "usb0/ASTORA/catalogs"
+        folder.mkdir(parents=True, exist_ok=True)
+        value = {"id": "usb-example", "name": "USB", "items": []}
+        (folder / "example.json").write_text(json.dumps(value))
+        (folder / "not-json.txt").write_text("hidden")
+        (folder / "huge.json").write_bytes(b"x" * (2 * 1024 * 1024 + 1))
+        (folder / "link.json").symlink_to(self.root / "secret.txt")
+        (folder / "directory.json").mkdir(exist_ok=True)
+        status, _, body = request("GET", "/api/usb-catalogs")
+        self.assertEqual(status, 200)
+        self.assertEqual([(x["slot"], x["name"]) for x in json.loads(body)], [(0, "example.json")])
+        self.assertEqual(request("POST", "/api/import-usb", {"slot": 0, "name": "example.json"})[0], 403)
+        status, _, body = self.post("/api/import-usb", {"slot": 0, "name": "example.json"})
+        self.assertEqual(status, 200)
+        self.assertEqual(json.loads(body), value)
+        for name in ["../secret.txt", "/example.json", "link.json", "huge.json", "directory.json", "example.json%00"]:
+            self.assertEqual(self.post("/api/import-usb", {"slot": 0, "name": name})[0], 400)
+        self.assertEqual(self.post("/api/import-usb", {"slot": 2, "name": "example.json"})[0], 400)
+
+    def test_usb_payload_rejects_trailing_json_and_embedded_nul(self):
+        folder = self.state / "usb1/ASTORA/catalogs"
+        folder.mkdir(parents=True, exist_ok=True)
+        for content in [b'{}{}', b'{}\x00', b'[]', b'{broken']:
+            (folder / "invalid.json").write_bytes(content)
+            self.assertEqual(self.post("/api/import-usb", {"slot": 1, "name": "invalid.json"})[0], 400)
+
+
 class RestoreValidation(ServerFixture):
     seeds = [VALID_JOB] + [dict(VALID_JOB, **change) for change in [
         {"id": -1}, {"id": 1.5}, {"id": 2**40}, {"titleId": "bad-title"},

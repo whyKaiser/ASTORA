@@ -9,12 +9,12 @@ var AstoraModel = (function () {
     for (i = 0; i < items.length; i++) {
       item = items[i];
       translation = item.translations && item.translations[language] || {};
-      if ((platform === 'ALL' || item.platform === platform) && (!needle || searchText(item.title + ' ' + item.description + ' ' + (translation.title || '') + ' ' + (translation.description || '')).indexOf(needle) >= 0)) result.push(item);
+      if ((platform === 'ALL' || item.platform === platform || platform === 'GAMES' && item.kind === 'game' || platform === 'APPS' && item.kind === 'app') && (!needle || searchText(item.title + ' ' + item.description + ' ' + (translation.title || '') + ' ' + (translation.description || '')).indexOf(needle) >= 0)) result.push(item);
     }
     return result;
   }
   function page(items, index, capacity) {
-    capacity = capacity === 2 ? 2 : 4;
+    capacity = Math.max(1, Math.min(12, Math.floor(Number(capacity) || 4)));
     var pages = Math.max(1, Math.ceil(items.length / capacity));
     index = Math.max(0, Math.min(pages - 1, Math.floor(Number(index) || 0)));
     return {items:items.slice(index * capacity, (index + 1) * capacity), index:index, pages:pages};
@@ -35,9 +35,11 @@ var AstoraModel = (function () {
     }
     return best;
   }
-  function art(item) {
-    var map = {SKID02048:'2048',APOL00004:'apollo',RMTC00001:'remote',PGIN00001:'installer'};
-    return '/art-' + (item && map[item.titleId] || 'generic') + '.svg';
+  function art(item, hero) {
+    var map = {SRBP00001:'srb2',SKID02048:'2048',APOL00004:'apollo',RMTC00001:'remote',PGIN00001:'installer'};
+    if (item && map[item.titleId]) return '/covers/' + map[item.titleId] + '.png';
+    var candidate = item && item.art && (hero && item.art.hero || item.art.cover);
+    return typeof AstoraCatalog !== 'undefined' && AstoraCatalog.artwork(candidate) || '/assets/astora-logo.png';
   }
   return {searchText:searchText, filter:filter, page:page, nearest:nearest, art:art};
 })();

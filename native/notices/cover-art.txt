@@ -1,0 +1,22 @@
+Cover art is credited to its original projects; it is not original ASTORA artwork.
+Exact source URLs and file hashes: astora-ui/covers/sources.json.
+
+Sonic Robo Blast 2: Sonic Team Junior; PS4 port by iHaiDeeZ.
+https://github.com/iHaiDeeZ/SRB2-PS4
+Sonic-related characters belong to their respective owners. This community port
+and ASTORA are not affiliated with SEGA.
+
+2048: SkidGFX PS4 port.
+https://github.com/skidgfx/PS4-2048
+
+Apollo Save Tool: Damian Parrino (bucanero), Apollo project contributors.
+https://github.com/bucanero/apollo-ps4
+
+ezRemote Client: cy33hc and contributors.
+https://github.com/cy33hc/ps4-ezremote-client
+
+PS4 Games Installer: e1z0 and contributors.
+https://github.com/e1z0/PS4-Games-Installer
+
+Each linked project retains its own licensing and attribution. ASTORA's MIT
+license applies to ASTORA-authored code, not to third-party game identities.

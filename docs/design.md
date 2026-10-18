@@ -1,26 +1,43 @@
-# ASTORA design direction
+# ASTORA native storefront — 0.6.0
 
-Arabic roots, calm color and responsive interaction. The flame logo was supplied for ASTORA; the original bitmap is preserved. No third-party store branding or game cover art is embedded.
+The current console interface uses a conventional game-store structure: horizontal
+navigation, a featured game with its own art, cover shelves, a details page,
+My library, transfers, and sources. The supplied ASTORA logo stays unchanged.
+Black/charcoal surfaces and a restrained gold accent keep controls distinct from
+game artwork. No architectural arches, floating cubes, or ambient geometric
+ornaments remain in the native interface.
 
-## Visual system
+## Behavior
 
-- Black, red (`#c42522`) and gold (`#e3b559`) drawn from the supplied logo. The current native surface is near-black (`#08090c`) with a subdued red glow. Version 0.5.0 removes the sand/light mode at the user’s request, including its selection in the desktop foundation.
-- Sadu-inspired woven bands, small original SVG accents. The previous architectural arch and eight-point emblem are removed. The Arabic character comes from textile-like patterns and typography.
-- The supplied logo appears as a complete identity tile, browser icon and opening preview. A CSS viewport shows its flame in the sidebar. The source PNG is unchanged. The exported icon has been verified on the actual PS4 home screen; see `branding/identity.json`.
-- The app always starts dark, including when older local storage contains a sand preference. No light-mode control remains.
-- Noto Sans Arabic, bundled under OFL; system Latin font. Text remains real selectable text. No rasterized Arabic headings.
-- Logical CSS properties mirror the sidebar and layout between Arabic RTL and English LTR. Technical identifiers and package filenames retain their direction.
-- Native 0.5.0 adds brief focus/card/art transitions and two slow ambient transform/opacity effects, with a Sadu weave accent. No looping video is fetched. Hidden pages pause animations; reduced motion disables them and is saved locally. The sidebar mirrors for Arabic/English, and SVG navigation icons avoid missing-font glyphs.
+- Arabic is the default; English mirrors the full layout. A title's original name
+  remains when its catalog supplies no translation.
+- Moving focus onto a cover changes the feature image and description. Short
+  opacity/transform transitions give feedback without constant animation.
+- Motion preference and language persist locally. Reduced motion removes those
+  transitions; hidden pages pause animation.
+- Store cards are bounded to five / four / two per page at wide / TV / narrow
+  sizes. My library permits two rows; pagination reaches all 5,000 entries.
+- My library contains saved entries and installations confirmed in ASTORA's own
+  history. It is not a scan of every game installed on the PS4, and does not
+  expose a launch action that has not been implemented.
+- Transfers report actual bytes and retain separate accepted, transferring,
+  failed, unknown and verified installed states.
+- Source management provides URL, USB and individual-package entry. Duplicate
+  titles merge mirrors; disabling a catalog keeps its saved metadata.
+- Artwork is bundled from the original projects. Unknown entries may supply
+  reviewed GitHub-hosted PNG/JPEG/WebP artwork, falling back to the ASTORA logo
+  if loading fails. Arbitrary HTML and remote scripts are never rendered.
 
-## Behavior implemented in this preview
+## Review
 
-- Complete Arabic/English interface dictionaries, including downloads, dialogs and error reports; preference persists.
-- Catalog-defined translations are optional. Missing translations retain the catalog author's original text.
-- Catalog search index rebuilds only after catalog changes. Search includes both languages and normalizes Arabic diacritics/tatweel and common alef forms.
-- Render at most 24 catalog cards. Do not create thousands of offscreen cards. A 5000-entry synthetic catalog was imported through the actual UI for verification.
-- Debounce search by 100 ms. Poll transfer state every two seconds on Downloads and every ten elsewhere; stop polling in hidden tabs. Unchanged snapshots do not rebuild download rows.
-- No frame-rate or latency claim on PS4. The native renderer has actual-console evidence; measured frame rate and large-library console testing remain open.
+The new storefront and source page opened on PS4 13.52. Browser review covered
+Arabic/English, 1920×1080 and 1280×720 layouts, search, details, saved favorites
+across reload, source enable/disable and empty-transfer states. No measured FPS
+claim is made. USB acceptance and SRB2 download/play testing remain pending after
+loss of the console's hotspot connection. See [verification](verification.md).
 
-## Data and storage
+## Earlier designs
 
-The browser stores catalog metadata and preferences. Download bytes are separate. Each catalog is limited to 5000 entries / 2 MiB JSON; the UI accepts at most 30 additional catalogs, subject to browser storage quota. The preview has no remote cover cache. A future native cover cache needs a measured, configurable budget and explicit cleanup.
+Earlier captures remain as historical test evidence. They do not describe the
+current native storefront. The separate desktop download prototype still runs
+at port 4318; `node native/preview.mjs` previews the current console UI at 4319.

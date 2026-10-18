@@ -9,6 +9,29 @@
   },
   "items": [
     {
+      "id": "srb2-ps4",
+      "title": "Sonic Robo Blast 2",
+      "platform": "PS4",
+      "kind": "game",
+      "titleId": "SRBP00001",
+      "version": "01.02",
+      "size": 183631872,
+      "sha256": "cf5648874ae98efe4d1e0eb30b4010fcbd5fbf4c3c8623d6fece9e159232245e",
+      "description": "لعبة منصات مجانية من Sonic Team Junior، بنقل iHaiDeeZ إلى PS4. تتضمن بيانات اللعبة 2.2.15. فُحص رابط الحزمة ومعرّفها وحجمها؛ اختبار التشغيل على السوني جارٍ. لا تدعم هذه النسخة اللعب عبر الإنترنت.",
+      "translations": {
+        "en": {
+          "description": "Free community platform game by Sonic Team Junior, ported to PS4 by iHaiDeeZ. Includes 2.2.15 game data. Package URL, ID and size checked; console gameplay validation pending. This port does not support online play."
+        }
+      },
+      "homepage": "https://github.com/iHaiDeeZ/SRB2-PS4",
+      "sources": [
+        {
+          "name": "GitHub · iHaiDeeZ",
+          "url": "https://github.com/iHaiDeeZ/SRB2-PS4/releases/download/v01.02/SRB2-PS4-v01.02.pkg"
+        }
+      ]
+    },
+    {
       "id": "ps4-2048",
       "title": "2048 Game",
       "platform": "PS4",

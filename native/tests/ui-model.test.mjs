@@ -35,8 +35,15 @@ test('Directional navigation follows physical geometry, including RTL shelves',(
   assert.equal(model.nearest(from,[left,above],39),-1);
 });
 test('Artwork is local and unknown imported metadata cannot inject an image URL',()=>{
-  assert.equal(model.art({titleId:'SKID02048'}),'/art-2048.svg');
-  assert.equal(model.art({titleId:'https://example.org/track.svg'}),'/art-generic.svg');
+  assert.equal(model.art({titleId:'SKID02048'}),'/covers/2048.png');
+  assert.equal(model.art({titleId:'https://example.org/track.svg'}),'/assets/astora-logo.png');
+});
+test('Five-cover store shelves and ten-cover library pages remain bounded',()=>{
+  assert.equal(model.page(entries,1,5).items[0].id,'5');
+  assert.equal(model.page(entries,1,10).items.length,10);
+  assert.equal(model.page(entries,0,1000).items.length,12);
+  assert.equal(model.filter([{...entries[0],kind:'game'}],'','GAMES','ar').length,1);
+  assert.equal(model.filter([{...entries[0],kind:'game'}],'','APPS','ar').length,0);
 });
 test('Focus lift does not make adjacent cards look like a lower row',()=>{
   assert.equal(model.nearest({left:900,top:395,width:200,height:150},[{left:670,top:400,width:200,height:150}],40),-1);
