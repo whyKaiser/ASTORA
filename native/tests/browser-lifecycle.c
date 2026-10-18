@@ -50,6 +50,7 @@ static void close_and_check(void)
     current_status = ORBIS_COMMON_DIALOG_STATUS_FINISHED;
     ast_browser_tick();
     assert(terminate_calls == count + 1);
+    assert(!ast_browser_running());
     assert(strcmp(ast_browser_error(), "Browser dialog closed") == 0);
     ast_browser_tick();
     assert(terminate_calls == count + 1);
@@ -66,6 +67,7 @@ int main(void)
     assert(initialize_calls == 0 && module_calls == 0);
 
     assert(ast_browser_open("http://127.0.0.1:12840/") == 0);
+    assert(ast_browser_running());
     assert(*ast_browser_error() == '\0' && module_calls == 1);
     ast_browser_tick();
     assert(terminate_calls == 0);

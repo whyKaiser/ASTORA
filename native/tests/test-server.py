@@ -113,6 +113,18 @@ class ServerFixture(unittest.TestCase):
 
 
 class HttpBoundaries(ServerFixture):
+    def test_ui_diagnostics_are_authenticated_bounded_and_allowlisted(self):
+        self.assertEqual(request("POST", "/api/ui-event", {"event": "detail_opened"})[0], 403)
+        self.assertEqual(self.post("/api/ui-event", {"event": "url=https://example.org/secret"})[0], 400)
+        self.assertEqual(self.post("/api/ui-event", {"event": "detail_opened\nforged"})[0], 400)
+        for _ in range(70):
+            self.assertEqual(self.post("/api/ui-event", {"event": "detail_opened"})[0], 200)
+        log = (self.state / "native-status.log").read_text()
+        self.assertEqual(log.count("ui_detail_opened "), 64)
+        self.assertNotIn("forged", log)
+        self.assertNotIn("secret", log)
+        self.assertNotIn(self.token, log)
+
     def test_listener_is_ipv4_loopback_only(self):
         # Linux exposes listening sockets without depending on ss/netstat.
         lines = Path("/proc/net/tcp").read_text().splitlines()[1:]

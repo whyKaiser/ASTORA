@@ -1,6 +1,6 @@
 # ASTORA native PS4 test build
 
-Version **0.4.0-alpha.1**, title ID **ASTR00001**, package version **00.40**.
+Version **0.4.1-alpha.1**, title ID **ASTR00001**, package version **00.41**.
 This is an independent process with its own console loopback server, browser dialog,
 HTTPS client and BGFT adapter. It does not load NovaStore, DiPlay, their plugins,
 or a computer-hosted server. **The tester confirmed that the ASTORA interface opened
@@ -9,6 +9,29 @@ on PS4. Native downloads, game installation and PC-off operation remain unverifi
 The initial package is 6,619,136 bytes. The bundled catalog links three developer
 utilities and the free 2048 game; game binaries are not bundled. Files download
 from their developers to the console. No paid hosting or service was configured.
+
+## TV interface update
+
+The native interface now uses a focused feature panel and four illustrated cards
+per page, with directional navigation, Arabic/English layout, dark/sand themes
+and saved reduced-motion settings. Illustrations are original local SVG assets;
+there are no background video downloads or continuous animation loops.
+
+![Native TV interface — desktop preview](../docs/native-tv-dark.jpg)
+
+[Sand theme preview](../docs/native-tv-sand.jpg). These screenshots are browser
+previews, not captures from a PS4 or measurements of console frame rate.
+
+Details are populated before their overlay opens. Request errors stay visible,
+closing the panel restores focus, and stale responses cannot replace a newer
+panel. Closing the native browser dialog now requests a normal application exit
+instead of leaving a running process with no interface. This fixes an identified
+lifecycle gap; the previously reported black-screen incident is not yet reproduced
+under observation.
+
+The tester confirmed installation and launch of 0.4.1. Retrieved device logs
+recorded `ui_library_ready` and a normal `interface_closed_exit_requested` sequence.
+Download, installation and controller acceptance tests are still outstanding.
 
 ## Build
 
@@ -40,6 +63,7 @@ console icon while preserving the project-supplied original logo unchanged.
 ```sh
 node native/preview.mjs
 # http://127.0.0.1:4319/ — browser-only preview, no console connection
+node --test native/tests/ui-model.test.mjs
 python3 native/tests/test-server.py
 clang-18 -std=c11 -Wall -Wextra -Werror -fsanitize=undefined -fsanitize-trap=all native/tests/backend-test.c -o /tmp/astora-backend-test
 /tmp/astora-backend-test
@@ -50,6 +74,13 @@ clang-18 -std=c11 -Wall -Wextra -Werror -I native/tests native/tests/browser-lif
 The host HTTP tests run the actual server with an explicit mock backend. Backend
 tests supply native API doubles. They are not device tests. Browser rendering,
 Arabic shaping and controller behavior need separate PS4 checks.
+
+For local developer pairing only, a manually created
+`/data/ASTORA/.request-remote-play-info` marker triggers a one-time read of the
+current user's numeric account ID into `/data/ASTORA/remote-play-info.json`.
+The package never creates this marker itself. The marker is consumed immediately;
+the diagnostic does not activate accounts, read passwords, or transmit the ID.
+Keep this output private and remove it after the requested local pairing setup.
 
 ## Console installation and acceptance
 

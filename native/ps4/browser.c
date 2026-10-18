@@ -100,6 +100,11 @@ const char *ast_browser_error(void)
     return browser_diagnostic;
 }
 
+int ast_browser_running(void)
+{
+    return browser_active;
+}
+
 static int is_loopback_url(const char *url)
 {
     const char *cursor;

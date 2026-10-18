@@ -3,9 +3,29 @@
 #include "server.h"
 #include <orbis/libkernel.h>
 #include <orbis/SystemService.h>
+#include <orbis/UserService.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
+/* Explicit, one-use local developer request. Never enabled by the package itself;
+ * no account activation, network transmission, keys or password reads. */
+static void remote_play_diagnostic(void) {
+  const char *marker = "/data/ASTORA/.request-remote-play-info";
+  struct stat st;
+  if (stat(marker, &st) != 0) return;
+  remove(marker);
+  OrbisUserServiceUserId user_id = -1;
+  uint64_t account_id = 0;
+  int rc = sceUserServiceGetInitialUser(&user_id);
+  if (!rc) rc = sceUserServiceGetNpAccountId(user_id, &account_id);
+  FILE *f = fopen("/data/ASTORA/remote-play-info.json", "w");
+  if (f) {
+    fprintf(f, "{\"result\":%d,\"accountIdHex\":\"%016llX\"}\n",
+            rc, (unsigned long long)account_id);
+    fclose(f);
+  }
+  ast_log("remote_play_local_info", rc);
+}
 static void startup_error(const char *detail) {
   OrbisNotificationRequest notification;
   memset(&notification, 0, sizeof(notification));
@@ -17,7 +37,7 @@ static void startup_error(const char *detail) {
 /* Independent OpenOrbis process; never loads Nova, DiPlay or a title plugin. */
 int main(void) {
   mkdir("/data/ASTORA", 0777);
-  ast_log("astora_boot_0.4.0", 0);
+  ast_log("astora_boot_0.4.1", 0);
   int rc = ast_backend_init();
   ast_log("backend_init", rc);
   if (rc) {
@@ -39,10 +59,22 @@ int main(void) {
   if (rc) {
     ast_log(ast_browser_error(), rc);
     startup_error(ast_browser_error());
+    return sceSystemServiceLoadExec("exit", NULL);
   }
   ast_log("hide_splash", sceSystemServiceHideSplashScreen());
+  if (!rc) remote_play_diagnostic();
+  char last_browser_error[192] = {0};
   for (;;) {
     ast_browser_tick();
+    const char *diagnostic = ast_browser_error();
+    if (diagnostic[0] && strcmp(last_browser_error, diagnostic)) {
+      ast_log(diagnostic, 0);
+      snprintf(last_browser_error, sizeof(last_browser_error), "%s", diagnostic);
+    }
+    if (!ast_browser_running()) {
+      ast_log("interface_closed_exit_requested", 0);
+      return sceSystemServiceLoadExec("exit", NULL);
+    }
     sceKernelUsleep(16667);
   }
   return 0;

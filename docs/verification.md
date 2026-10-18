@@ -30,7 +30,7 @@ An additional opt-in live header check passed for all three bundled sources: Apo
 
 ## Not yet verified
 
-- ASTORA running on PS4 or PS5.
+- Full native workflow acceptance on PS4; any ASTORA execution on PS5.
 - Installation through ASTORA on a console.
 - Console controller, suspend/resume and power interruption.
 - Console-native HTTPS and source resolvers.
@@ -91,3 +91,35 @@ for this launch. Source inspection, native TLS, transfer progress, game installa
 gameplay, detailed Arabic/controller checks and PC-off operation remain unverified.
 The next requested device check is **2048 Game → Check source → Download and install**.
 Build success, desktop rendering and host tests do not satisfy these remaining checks.
+
+## Native 0.4.1-alpha.1 TV interface and lifecycle
+
+- Native cross-compilation passed with `-Wall -Wextra -Werror`.
+- Eight UI model tests passed, including 5000-entry pagination with four rendered
+  items per page, Arabic search normalization, filters, and geometric navigation.
+- The actual HTTP server passed 23 host tests with a backend double. UI events
+  require the session token, accept a fixed event allowlist, and stop after 64
+  events per session. Arbitrary text, URLs and account IDs are not UI log fields.
+- Browser lifecycle mock tests passed, including the new active-state accessor.
+- Browser checks covered 1920×1080 and 1280×720 layouts, RTL navigation, detail
+  opening, focus trapping/restoration, Arabic/English and dark/sand switching,
+  reduced-motion persistence, the empty PS5 filter, and visible preview-only
+  request errors. The 1280×720 document had no horizontal or vertical overflow.
+  No browser warning/error entries were captured. Viewport override was reset.
+- The package uses APP_VER/VERSION `00.41`. All 23 extracted inner-PFS files
+  matched their input hashes. A complete USB FTP readback matched SHA-256:
+
+```text
+b1fcd0fec4f7a0e695e7f74ee59a09fc04365e76a3c66b8c7413822697765e84
+```
+
+The user confirmed **“ثبّتّه وفتح”** (installed it and it opened). Retrieved console
+logs recorded `astora_boot_0.4.1`, successful backend/listener/browser startup,
+`ui_library_ready`, and one browser close followed by
+`interface_closed_exit_requested` before another successful launch.
+
+The code previously kept its main loop alive after the browser dialog finished.
+It now requests normal application exit. This is a verified code defect and
+an observed exit sequence, but not proof of the cause of the user's earlier
+black screen after selecting 2048. Console source inspection, native download,
+installation, gameplay, measured frame rate and PC-off operation remain open.

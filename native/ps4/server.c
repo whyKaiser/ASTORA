@@ -36,6 +36,7 @@
 static char asset_root[512], catalog_path[512], state_root[512], token[65];
 static int listener = -1;
 static int config_logged, index_logged;
+static unsigned ui_event_count;
 typedef struct {
   int id;
   char name[161], title[10];
@@ -361,7 +362,7 @@ static void handle(int fd) {
     cJSON *o = cJSON_CreateObject();
     cJSON_AddStringToObject(o, "token", token);
     cJSON_AddStringToObject(o, "mode", "ps4-native-experimental");
-    cJSON_AddStringToObject(o, "version", "0.4.0-alpha.1");
+    cJSON_AddStringToObject(o, "version", "0.4.1-alpha.1");
     cJSON_AddBoolToObject(o, "pcRequired", 0);
     json_reply(fd, 200, o);
     return;
@@ -427,6 +428,32 @@ static void handle(int fd) {
       error_reply(fd, 400, "INVALID_JSON", 0);
       return;
     }
+    if (!strcmp(path, "/api/ui-event")) {
+      /* Fixed event names only: no source URLs, identifiers, or arbitrary log text. */
+      const char *event = str(o, "event");
+      const char *events[] = {"library_ready", "detail_opened", "detail_closed",
+                              "inspect_clicked", "install_clicked", "ui_error"};
+      int accepted = 0;
+      for (size_t i = 0; event && i < sizeof(events) / sizeof(events[0]); i++) {
+        if (!strcmp(event, events[i])) {
+          accepted = 1;
+          if (ui_event_count < 64) {
+            char label[48];
+            snprintf(label, sizeof(label), "ui_%s", events[i]);
+            ast_log(label, 0);
+            ui_event_count++;
+          }
+          break;
+        }
+      }
+      cJSON_Delete(o);
+      if (!accepted) {
+        error_reply(fd, 400, "INVALID_UI_EVENT", 0);
+        return;
+      }
+      reply(fd, 200, "application/json", "{\"ok\":true}", 11);
+      return;
+    }
     if (!strcmp(path, "/api/inspect")) {
       const cJSON *platform_value = cJSON_GetObjectItemCaseSensitive(o, "platform");
       if (platform_value && !supported_platform(str(o, "platform"))) {
@@ -442,7 +469,9 @@ static void handle(int fd) {
       }
       char title[10] = {0};
       uint64_t size = 0;
+      ast_log("inspect_begin", 0);
       int rc = ast_inspect(url, title, &size);
+      ast_log("inspect_end", rc);
       cJSON_Delete(o);
       if (rc) {
         error_reply(fd, 400, ast_backend_error(), rc);

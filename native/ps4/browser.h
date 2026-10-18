@@ -10,6 +10,9 @@ int ast_browser_open(const char *url);
 /* Poll from the application loop, approximately once per frame. A user-closed
  * dialog stays closed; this function never starts a reopen loop. */
 void ast_browser_tick(void);
+/* False once the system closes or fails the dialog. The launcher should exit,
+ * rather than leave a running application with no visible surface. */
+int ast_browser_running(void);
 
 /* Process-local diagnostic; empty while the last operation is successful.
  * No log file is written by this module. All calls use the same thread. */
