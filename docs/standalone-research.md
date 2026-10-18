@@ -62,3 +62,15 @@ and password login. These observations do not establish current pricing, permane
 free access, download reliability or an integration API. No package was installed,
 no account was created, and no catalog was imported. Keep it as a comparison target,
 not a dependency of ASTORA.
+
+
+### Infinity follow-up for the installation request
+
+The install hostname returned NXDOMAIN through both the system resolver and
+Google public DNS on 2026-10-18. GitHub’s release API did reveal two tags, `assets`
+and `old`, with reference documents and 1,238,958,080-byte / 562,167,808-byte
+files named `assets.pkg.part0` and `assets.pkg.part0.old`. They were not downloaded
+or established as the application installer. The repository still exposes no
+application source. A local read of the activation panel returned HTTP 403.
+No working installer was acquired, so Infinity was neither installed nor
+translated. An accessible app package is required to continue that part.

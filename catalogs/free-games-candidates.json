@@ -2,7 +2,11 @@
   "schemaVersion": 1,
   "id": "astora-free-game-candidates",
   "name": "ألعاب منزلية مجانية • مرشحة لاختبار السوني",
-  "translations": { "en": { "name": "Free homebrew games • Console test candidates" } },
+  "translations": {
+    "en": {
+      "name": "Free homebrew games • Console test candidates"
+    }
+  },
   "items": [
     {
       "id": "ps4-2048",
@@ -13,11 +17,18 @@
       "version": "1.00",
       "size": 35454976,
       "sha256": "c53d517bb4ff86c62638edf03548bc94c9bd4b2b21c618c69770469a809c2e4a",
-      "description": "لعبة ألغاز منزلية من SkidGFX. فُحص الرابط وترويسة الحزمة؛ التشغيل على PS4 13.52 لم يُختبر بعد. التنزيل من إصدار المطوّر الأصلي.",
-      "translations": { "en": { "description": "Homebrew puzzle game by SkidGFX. Link and package header checked; execution on PS4 13.52 is not tested. Downloads from the developer's original release." } },
+      "description": "لعبة ألغاز مجانية من SkidGFX. نجح تنزيلها وتثبيتها وفتحها وتحريك القطع على PS4 13.52. زر الخروج داخل اللعبة أعطى CE-34878-0؛ السبب غير محسوم. الحفظ والتنزيلات المنقطعة لم تُختبر بعد.",
+      "translations": {
+        "en": {
+          "description": "Free puzzle game by SkidGFX. Download, installation, launch and tile movement tested on PS4 13.52. Its own Quit action produced CE-34878-0; cause unconfirmed. Saves and interrupted transfers remain untested."
+        }
+      },
       "homepage": "https://github.com/skidgfx/PS4-2048",
       "sources": [
-        { "name": "GitHub • SkidGFX", "url": "https://github.com/skidgfx/PS4-2048/releases/download/v1.0/IV0000-SKID02048_00-GAME204800000000.pkg" }
+        {
+          "name": "GitHub • SkidGFX",
+          "url": "https://github.com/skidgfx/PS4-2048/releases/download/v1.0/IV0000-SKID02048_00-GAME204800000000.pkg"
+        }
       ]
     },
     {
@@ -30,10 +41,17 @@
       "size": 13762560,
       "sha256": "5ffe1e0c70ab455a693db4af6ac6960e2a2ec430519ea09571bf4e6e09f1d3f0",
       "description": "محرك OpenArena فقط. يحتاج ملفات اللعبة المجانية baseoa في /data/ioq3/baseoa/، حسب تعليمات المطوّر. فُحص رابط الحزمة؛ تنزيل البيانات والتشغيل على السوني لم يُختبرا. ليس تثبيتًا كاملًا بضغطة واحدة.",
-      "translations": { "en": { "description": "OpenArena engine only. Requires the free baseoa game data in /data/ioq3/baseoa/, as described by the developer. Package link checked; game-data download and console execution are untested. Not a complete one-click installation." } },
+      "translations": {
+        "en": {
+          "description": "OpenArena engine only. Requires the free baseoa game data in /data/ioq3/baseoa/, as described by the developer. Package link checked; game-data download and console execution are untested. Not a complete one-click installation."
+        }
+      },
       "homepage": "https://github.com/Mayo1970/ioQuake3-PS4",
       "sources": [
-        { "name": "GitHub • Mayo1970", "url": "https://github.com/Mayo1970/ioQuake3-PS4/releases/download/1.8/IV0000-QUAK03002_00-IOQ3PS4PORT00000.pkg" }
+        {
+          "name": "GitHub • Mayo1970",
+          "url": "https://github.com/Mayo1970/ioQuake3-PS4/releases/download/1.8/IV0000-QUAK03002_00-IOQ3PS4PORT00000.pkg"
+        }
       ]
     }
   ]

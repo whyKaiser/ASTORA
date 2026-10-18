@@ -25,9 +25,9 @@
 
 - Done: OpenOrbis compilation and original native browser/HTTP/BGFT bindings.
 - Done: package the 6.3 MiB native test build as `ASTR00001`; round-trip assets and FTP readback verified.
-- Run the Arabic UI locally on PS4 and test controller navigation.
-- Inspect a developer-hosted homebrew PKG using verified TLS on the console.
-- Register one native installation, track real progress, verify installation, and launch it.
+- Done: run the Arabic UI locally on PS4 and test controller navigation.
+- Done: inspect a developer-hosted homebrew PKG using verified TLS on the console.
+- Done in 0.4.10: register the 2048 installation, track real progress, verify installation, launch and move tiles. Its own Quit action still needs investigation.
 - Demonstrate the same workflow with the computer turned off.
 
 This is the next acceptance gate. It is not currently complete, and no release date is promised.
@@ -42,3 +42,12 @@ This is the next acceptance gate. It is not currently complete, and no release d
 - Broader device support only after independent capability and firmware verification.
 
 Catalog availability belongs to its source. A client can explain restricted or dead links, but cannot promise to repair them all. Popularity is not an acceptance criterion; reproducible working releases are.
+
+## 0.5.0 console interface
+
+- Dark mode only in current source; the earlier sand preference is ignored.
+- TV stage, controller navigation rail, larger cards and SVG navigation icons.
+- Artwork transitions, two restrained ambient effects and reduced-motion controls.
+- Real transfer percentages with a distinct verified-installed appearance.
+- Browser regression checks at 720p/1080p; see current device verification.
+- Infinity integration is waiting for an accessible application installer; it is not installed or translated.

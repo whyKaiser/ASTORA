@@ -4,20 +4,20 @@
 
 [العربية](README.ar.md) · [Catalog format](docs/catalog-format.md) · [Roadmap](docs/roadmap.md) · [Verification](docs/verification.md) · [Standalone research](docs/standalone-research.md) · [Design](docs/design.md)
 
-![ASTORA desktop preview](docs/preview.jpg)
+![ASTORA 0.5.0 on PS4](docs/ps4-home-0.5.0.png)
 
-[Sand light mode](docs/preview-sand.jpg) · [English preview](docs/preview-en.jpg) · [Library](docs/library.jpg) · [Opening preview](docs/opening-preview.jpg)
+[PS4 transfers](docs/ps4-jobs-0.5.0.png) · [PS4 English](docs/ps4-english-0.5.0.png) · [Earlier desktop preview](docs/preview.jpg)
 
 ## Status: desktop preview + native test build
 
-**The published v0.3.0-alpha.1 release remains a desktop preview.** Its downloads are saved on the computer. The [native test build](native/README.md), **0.4.10-alpha.1**, runs as `ASTR00001` with its own PS4 HTTP/TLS/BGFT adapter and TV interface. On PS4 13.52, actual device tests verified controller selection, native HTTPS inspection, the full 2048 download, installed-title confirmation, game launch and tile movement. Arabic/English and dark/sand switching also worked on the console. **2048's own Quit action crashed with `CE-34878-0`; its cause is unconfirmed. Literal PC-off testing and broad firmware compatibility remain open. No verified native binary release is published.**
+**The published v0.3.0-alpha.1 release remains a desktop preview.** Its downloads are saved on the computer. The [native test build](native/README.md), **0.5.0-alpha.1**, runs as `ASTR00001` with its own PS4 HTTP/TLS/BGFT adapter and TV interface. On PS4 13.52, actual device tests verified controller selection, native HTTPS inspection, the full 2048 download, installed-title confirmation, game launch and tile movement. Arabic/English switching worked on the console. Version 0.5.0 replaces the earlier layout with a dark-only TV stage, a controller navigation rail and larger reactive cards. **2048's own Quit action crashed with `CE-34878-0`; its cause is unconfirmed. Literal PC-off testing and broad firmware compatibility remain open. No verified native binary release is published.**
 
 The native runtime downloads directly on PS4; the computer provided Remote Play viewing/control during this test. A separate test with the computer powered off is still required. PS3 and PS5 games do not become playable on PS4 by adding a catalog.
 
 ## What works in the desktop preview
 
 - Arabic and English, mirrored RTL/LTR layout, saved language and reduced-motion settings.
-- Supplied ASTORA flame logo, black/red/gold identity and a warm sand light mode. Theme preference persists.
+- Supplied ASTORA flame logo and black/red/gold identity. Current source uses dark mode only; saved light-mode preferences are ignored.
 - Sadu-inspired woven accents and an app-opening preview; no architectural arch motif.
 - Indexed bilingual search, 24-card pagination, platform filters and keyboard navigation. Tested with a 5000-entry catalog.
 - Multiple named catalogs and multiple download mirrors per item. JSON file or public URL import.

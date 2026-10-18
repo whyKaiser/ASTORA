@@ -7,7 +7,6 @@ const stored = key => { try { return localStorage.getItem(key); } catch { return
 let language = stored('astora.language') === 'en' ? 'en' : 'ar';
 const reducedPreference = matchMedia('(prefers-reduced-motion: reduce)');
 let motion = stored('astora.motion') || 'system';
-let theme = document.documentElement.dataset.theme === 'sand' ? 'sand' : 'dark';
 let token, catalogs = [], disabled = new Set(), items = [], search = '', platform = 'ALL', page = 0;
 let selected = null, selectedSource = null, jobs = [], polling = false, currentView = 'library', lastJobs = '';
 let toastTimer, searchTimer, pollTimer, inspectBusy = new Set();
@@ -64,10 +63,8 @@ function updateMotion() {
   $('#motion-toggle').setAttribute('aria-pressed', String(reduced()));
 }
 function updateTheme() {
-  document.documentElement.dataset.theme = theme;
-  document.querySelector('meta[name="theme-color"]').content = theme === 'sand' ? '#ead9b8' : '#0e0c0a';
-  $('#theme-toggle').textContent = t(theme === 'sand' ? 'darkTheme' : 'sandTheme');
-  $('#theme-toggle').setAttribute('aria-label', t(theme === 'sand' ? 'switchToDark' : 'switchToSand'));
+  document.documentElement.dataset.theme = 'dark';
+  document.querySelector('meta[name="theme-color"]').content = '#0e0c0a';
 }
 function applyLocale() {
   document.documentElement.lang = language; document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
@@ -239,7 +236,6 @@ function schedulePoll() {
 }
 document.addEventListener('visibilitychange', () => { document.body.classList.toggle('background', document.hidden); schedulePoll(); if (!document.hidden) pollJobs(); });
 $('#language-toggle').addEventListener('click', () => { language = language === 'ar' ? 'en' : 'ar'; savePreference('astora.language', language); applyLocale(); });
-$('#theme-toggle').addEventListener('click', () => { theme = theme === 'dark' ? 'sand' : 'dark'; savePreference('astora.theme', theme); updateTheme(); });
 $('#launch-preview').addEventListener('click', () => $('#launch-dialog').showModal());
 $('#enter-app').addEventListener('click', () => $('#launch-dialog').close());
 $('#motion-toggle').addEventListener('click', () => { motion = reduced() ? 'gentle' : 'reduced'; savePreference('astora.motion', motion); updateMotion(); });

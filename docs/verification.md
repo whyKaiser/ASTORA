@@ -201,3 +201,45 @@ arbitrary source providers and all other requested platforms remain unverified.
 Native full-file SHA-256 is not implemented. Local evidence includes the source
 check, progress frames, home-screen installation, gameplay and quit-error captures.
 No combined native binary is published as a verified release.
+
+## Native 0.5.0 dark console redesign
+
+The final local test package uses APP_VER/VERSION `00.60`, 6,619,136 bytes.
+Complete USB FTP readback matched SHA-256:
+
+```text
+fb461135402fda6ed09dba44039be393327d172cee62681f769c88fd538feee2
+```
+
+- Installed and opened on the actual PS4 13.52. A first visual pass led to larger
+  1080p card/navigation text and a wider detail panel; the rebuilt package above
+  was installed again before the final checks.
+- D-pad selection changed the large feature artwork and title. Cross opened
+  Apollo's details, Down selected Check source, and Cross completed native HTTPS
+  inspection: `APOL00004`, 21.8 MiB. Closing details returned to the library.
+- The new Transfers layout displayed the retained 2048 record at **100%** and
+  **Installed — verified**. No additional game was downloaded in this iteration.
+- Arabic/English switching mirrored the controller rail and layout on the console.
+  Arabic was restored. The light-mode control is removed; old sand preferences
+  are ignored by both native and desktop source.
+- Browser checks covered 1280×720 and 1920×1080, without horizontal/vertical
+  document overflow after the artwork-boundary correction. Search for 2048
+  produced exactly one card. The unsupported PS5 filter showed an honest empty
+  state. Reduced motion disabled both ambient animations and persisted on reload.
+  The temporary viewport override was reset.
+- All 35 desktop regression checks, 14 native UI input/model checks and relevant
+  JavaScript syntax checks passed. Native cross-compilation/package assembly
+  passed. No measured PS4 frame-rate claim is made.
+- The final boot log records successful backend, listener and browser startup,
+  detail open/close and completed inspection, with no `ui_error` in that launch.
+  ASTORA was left open in Arabic/dark mode; Remote Play was stopped.
+
+![ASTORA 0.5.0 on the actual PS4](ps4-home-0.5.0.png)
+
+[Transfers](ps4-jobs-0.5.0.png) · [Apollo inspection](ps4-apollo-0.5.0.png) · [English](ps4-english-0.5.0.png)
+
+The earlier 2048 Quit issue, PC-off acceptance, interruption recovery and broad
+compatibility remain open. Infinity was not installed or translated: its linked
+installer hostname returned NXDOMAIN through two resolvers, and no application
+installer was established from the public release assets. See the standalone
+research follow-up. No account creation or activation was attempted.

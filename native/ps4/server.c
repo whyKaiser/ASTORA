@@ -362,7 +362,7 @@ static void handle(int fd) {
     cJSON *o = cJSON_CreateObject();
     cJSON_AddStringToObject(o, "token", token);
     cJSON_AddStringToObject(o, "mode", "ps4-native-experimental");
-    cJSON_AddStringToObject(o, "version", "0.4.10-alpha.1");
+    cJSON_AddStringToObject(o, "version", "0.5.0-alpha.1");
     cJSON_AddBoolToObject(o, "pcRequired", 0);
     json_reply(fd, 200, o);
     return;

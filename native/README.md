@@ -1,6 +1,6 @@
 # ASTORA native PS4 test build
 
-Version **0.4.10-alpha.1**, title ID **ASTR00001**, package version **00.50**.
+Version **0.5.0-alpha.1**, title ID **ASTR00001**, package version **00.60**.
 This is an independent process with its own console loopback server, browser dialog,
 HTTPS client and BGFT adapter. It does not load NovaStore, DiPlay, their plugins,
 or a computer-hosted server. **Actual PS4 testing verified opening the interface,
@@ -16,14 +16,14 @@ from their developers to the console. No paid hosting or service was configured.
 ## TV interface update
 
 The native interface now uses a focused feature panel and four illustrated cards
-per page, with directional navigation, Arabic/English layout, dark/sand themes
-and saved reduced-motion settings. Illustrations are original local SVG assets;
-there are no background video downloads or continuous animation loops.
+per page, with directional navigation, Arabic/English layout and a dark-only identity
+and saved reduced-motion settings. Version 0.5.0 uses a dark-only console stage, a vertical controller navigation rail and larger reactive cards. Two slow transform/opacity ambient effects add motion; reduced-motion mode disables them, hidden pages pause them, and secondary views pause the background glow. Illustrations are original local SVG assets; no background video is downloaded.
 
-![Native TV interface — desktop preview](../docs/native-tv-dark.jpg)
+![Native 0.5.0 TV interface — actual PS4 capture](../docs/ps4-home-0.5.0.png)
 
-[Sand theme preview](../docs/native-tv-sand.jpg). These screenshots are browser
-previews, not captures from a PS4 or measurements of console frame rate.
+The screenshot above is from PS4 13.52. The new controller rail, Arabic/English
+switching, Apollo HTTPS inspection and retained installed-job display were checked
+on that device. See the verification record; no measured frame-rate claim is made.
 
 Details are populated before their overlay opens. Request errors stay visible,
 closing the panel restores focus, and stale responses cannot replace a newer
