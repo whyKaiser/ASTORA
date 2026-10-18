@@ -3,7 +3,8 @@
 Version **0.4.0-alpha.1**, title ID **ASTR00001**, package version **00.40**.
 This is an independent process with its own console loopback server, browser dialog,
 HTTPS client and BGFT adapter. It does not load NovaStore, DiPlay, their plugins,
-or a computer-hosted server. **Real console execution and installation remain unverified.**
+or a computer-hosted server. **The tester confirmed that the ASTORA interface opened
+on PS4. Native downloads, game installation and PC-off operation remain unverified.**
 
 The initial package is 6,619,136 bytes. The bundled catalog links three developer
 utilities and the free 2048 game; game binaries are not bundled. Files download

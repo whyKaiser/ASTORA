@@ -10,7 +10,7 @@
 
 ## Status: desktop preview + native test build
 
-**The published v0.3.0-alpha.1 release remains a desktop preview.** Its downloads are saved on the computer. A new [0.4.0-alpha.1 native test build](native/README.md) now compiles and packages as `ASTR00001`, with its own PS4 HTTP/TLS/BGFT implementation. Its 6.3 MiB PKG was transferred to the test console's USB and verified by readback. **Console startup, installation and PC-off operation are not yet verified; no verified native release is published.**
+**The published v0.3.0-alpha.1 release remains a desktop preview.** Its downloads are saved on the computer. A new [0.4.0-alpha.1 native test build](native/README.md) now compiles and packages as `ASTR00001`, with its own PS4 HTTP/TLS/BGFT implementation. Its 6.3 MiB PKG was transferred to the test console's USB and verified by readback. **The tester confirmed that the interface opened on PS4. Native downloads, game installation and PC-off operation remain unverified; no verified native release is published.**
 
 The intended product runs on PS4 without a PC. The native runtime is implemented; actual console acceptance testing remains open. PS3 and PS5 games do not become playable on PS4 by adding a catalog.
 

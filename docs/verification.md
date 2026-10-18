@@ -77,4 +77,17 @@ A live preflight through the 0.2 UI again identified PS4 Games Installer r34 as 
 cd97d904baee16d97962262e77a9c3bc45a10ca357a42d3d96670a437c1c9a43
 ```
 
-The package is staged for manual console installation. No ASTORA startup log was available at the last read. Do not interpret transfer, build success, desktop rendering or host tests as PS4 execution, native TLS success, installed games or PC-off proof. The native BGFT implementation does not calculate full-file SHA-256.
+The native BGFT implementation does not calculate full-file SHA-256.
+
+### Console launch report — 2026-10-18
+
+After being asked to install the staged `ASTORA-0.4.0-alpha.1-PS4.pkg` and open
+ASTORA from the home screen, the tester reported: **“ظهرت واجهة أستورا”**
+(the ASTORA interface appeared). This is user-reported evidence of interface
+launch on the test PS4, whose previously reported firmware is 13.52.
+
+Follow-up FTP reads timed out, so no native startup log or job record was collected
+for this launch. Source inspection, native TLS, transfer progress, game installation,
+gameplay, detailed Arabic/controller checks and PC-off operation remain unverified.
+The next requested device check is **2048 Game → Check source → Download and install**.
+Build success, desktop rendering and host tests do not satisfy these remaining checks.
