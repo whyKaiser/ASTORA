@@ -23,8 +23,8 @@
 
 ## Next: standalone PS4 proof
 
-- Establish a clean OpenOrbis build and native API bindings.
-- Package a small standalone ASTORA launcher with its own title ID.
+- Done: OpenOrbis compilation and original native browser/HTTP/BGFT bindings.
+- Done: package the 6.3 MiB native test build as `ASTR00001`; round-trip assets and FTP readback verified.
 - Run the Arabic UI locally on PS4 and test controller navigation.
 - Inspect a developer-hosted homebrew PKG using verified TLS on the console.
 - Register one native installation, track real progress, verify installation, and launch it.

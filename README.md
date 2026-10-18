@@ -8,13 +8,13 @@
 
 [Sand light mode](docs/preview-sand.jpg) · [English preview](docs/preview-en.jpg) · [Library](docs/library.jpg) · [Opening preview](docs/opening-preview.jpg)
 
-## Status: desktop pre-alpha
+## Status: desktop preview + native test build
 
-**v0.3.0-alpha.1 is a working desktop preview and package-management foundation. It is not a standalone PS4 application. There is no ASTORA PKG release yet.** Downloads in this version are saved on the computer, not installed on a console.
+**The published v0.3.0-alpha.1 release remains a desktop preview.** Its downloads are saved on the computer. A new [0.4.0-alpha.1 native test build](native/README.md) now compiles and packages as `ASTR00001`, with its own PS4 HTTP/TLS/BGFT implementation. Its 6.3 MiB PKG was transferred to the test console's USB and verified by readback. **Console startup, installation and PC-off operation are not yet verified; no verified native release is published.**
 
-The intended product runs on PS4 without a PC. That requires a native runtime and console testing; neither is claimed complete here. PS3 and PS5 games do not become playable on PS4 by adding a catalog.
+The intended product runs on PS4 without a PC. The native runtime is implemented; actual console acceptance testing remains open. PS3 and PS5 games do not become playable on PS4 by adding a catalog.
 
-## What works
+## What works in the desktop preview
 
 - Arabic and English, mirrored RTL/LTR layout, saved language and reduced-motion settings.
 - Supplied ASTORA flame logo, black/red/gold identity and a warm sand light mode. Theme preference persists.
@@ -29,6 +29,8 @@ The intended product runs on PS4 without a PC. That requires a native runtime an
 - Keep transfer and installation states distinct. This preview never reports a console installation.
 
 The bundled catalog links to three free homebrew tools on their developers' GitHub releases. No game files, private catalogs, credentials or signed download URLs are distributed with this project.
+
+See [free source research](docs/free-sources-research.md) for developer releases and platform limitations. The native catalog adds the free 2048 game for the first device test. Native behavior and limits are documented separately; desktop full-file SHA-256 is not implemented in the native BGFT path.
 
 ## Run
 
@@ -59,7 +61,7 @@ Automated GitHub Actions are not enabled yet. [A workflow template](docs/github-
 
 ## Current limits
 
-- No PS4-native executable, console installation API, PS5 support, controller testing or firmware compatibility claim yet.
+- The desktop preview still downloads to the computer. The separate native test build has not passed console acceptance testing. No PS5 support, controller or firmware compatibility claim yet.
 - Catalog categories are organizational. PS1/PS2/PSP entries can be inspected only when already packaged in a PS4 container; this app does not convert or emulate them.
 - Direct public HTTP(S) URLs only. Landing-page resolvers, login-required sources, archive extraction and debrid services are not implemented.
 - HTTPS certificate validation stays enabled. HTTPS-to-HTTP redirects are rejected. An explicitly supplied HTTP source is labeled unencrypted.
@@ -72,6 +74,6 @@ Automated GitHub Actions are not enabled yet. [A workflow template](docs/github-
 
 `src/` contains original JavaScript modules for catalogs, PS4 header inspection, bounded networking, diagnostics and download recovery. `server.mjs` is the development adapter. `web/` contains the original UI. See [the architecture](docs/architecture.md) for the native work remaining.
 
-Original ASTORA code: MIT. The project-supplied logo is preserved byte-for-byte; [branding records](branding/README.md) distinguish the implemented web identity from pending native console exports. Noto Sans Arabic: SIL Open Font License, included under [third-party/](third-party/Noto-OFL.txt). Linked homebrew tools retain their own authorship and licenses. ASTORA does not include NovaStore or DiPlay source, catalogs or binaries.
+Original ASTORA code: MIT. The project-supplied logo is preserved byte-for-byte; [branding records](branding/README.md) distinguish the implemented web identity from the native console icon export. Noto Sans Arabic: SIL Open Font License, included under [third-party/](third-party/Noto-OFL.txt). Linked homebrew tools retain their own authorship and licenses. ASTORA does not include NovaStore or DiPlay source, catalogs or binaries.
 
 Maintained by [whyKaiser](https://github.com/whyKaiser). Not affiliated with Sony or PlayStation.

@@ -8,3 +8,5 @@ coverage/
 *.part
 artifacts/
 !.env.example
+native/build/
+native/tests/build/

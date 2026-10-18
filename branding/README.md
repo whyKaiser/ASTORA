@@ -9,3 +9,6 @@ The web UI displays the complete original image for its identity tile and openin
 Brand colors are black, red and gold, with warm sand surfaces for the light mode. Darker gold text in the light theme maintains legibility. The small original `weave.svg` adds Sadu-inspired textile bands; architectural arches and the old eight-point emblem have been removed.
 
 `identity.json` records the source, colors and intended console uses. A future native build should export the PS4 application icon and integrate the opening screen from this master, preserving proportions and background. **A native icon export, PS4 package and console installation are not produced by this branding update.** The preview is available through the “Preview app opening” control beside the logo.
+
+
+Native test build update (0.4.0-alpha.1): `native/prepare-package.py` now creates a 512x512 RGB `sce_sys/icon0.png`, preserving proportions with black padding, and embeds the unchanged original in its local UI. These exports are in the staged PKG. Console icon/display verification remains pending.

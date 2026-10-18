@@ -60,3 +60,21 @@ A live preflight through the 0.2 UI again identified PS4 Games Installer r34 as 
 - Arabic and English layouts, the opening-preview dialog, library cards and narrow 390 × 844 viewport were inspected. Both measured content/scroll widths at 375 CSS pixels, without horizontal overflow. Viewport restored after testing.
 - Native PS4 icon export/package integration was not performed. No console changes were made by this update.
 - Final browser logs contained no warning/error entries.
+
+
+## Native 0.4.0-alpha.1 preparation (not console acceptance)
+
+- All 35 desktop regression checks still pass. Syntax checks pass for native ES5 UI and preview server.
+- OpenOrbis 0.5.4 cross-compilation with clang18/ld.lld18 and `-Wall -Wextra -Werror` passed.
+- Actual native HTTP server: 22 host tests pass with an explicit backend double, covering framing, Host/Origin/token validation, strict JSON, package metadata, traversal, persisted task validation and honest progress.
+- Native backend contract tests pass, including UBSan trap mode: URL/DNS/TLS/redirect bounds, package identity, registration errors and progress. They do not execute console APIs.
+- Browser adapter lifecycle mock tests pass; exact 328-byte ABI is guarded by compile-time assertions.
+- Browser-only native UI checks: Arabic/English, dark/sand, persistence after reload, 2048 search and package details. Preview is visibly labeled as not connected to a console.
+- A package was built as `IV0000-ASTR00001_00-ASTORA0000000000`, app version `00.40`, 6,619,136 bytes. Header title/type/size validated. Extracted inner-PFS assets, executable and runtime modules matched input SHA-256; metadata/icon were prepared separately.
+- USB upload completed and complete FTP readback SHA-256 matched:
+
+```text
+cd97d904baee16d97962262e77a9c3bc45a10ca357a42d3d96670a437c1c9a43
+```
+
+The package is staged for manual console installation. No ASTORA startup log was available at the last read. Do not interpret transfer, build success, desktop rendering or host tests as PS4 execution, native TLS success, installed games or PC-off proof. The native BGFT implementation does not calculate full-file SHA-256.
